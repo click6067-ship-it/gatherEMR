@@ -437,7 +437,6 @@ details.oneline input { width: 100%; padding: 10px 12px; border: 1px solid var(-
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); mask-composite: exclude;
   opacity: 0; transition: opacity .25s; }
-.navpill.cta:hover::before, .ld-cta:hover::before { opacity: 1; animation: cta-orbit 1.8s linear infinite; }
-.navpill.cta:hover, .ld-cta:hover { box-shadow: 0 0 0 1px rgba(77,140,255,.4), 0 10px 40px -6px rgba(47,107,255,.55); }
+.navpill.cta:hover::before, .ld-cta:hover::before { opacity: 1; filter: drop-shadow(0 0 6px var(--glass-glow)); animation: cta-orbit 1.8s linear infinite; }
 @keyframes cta-orbit { to { --cta-ang: 360deg; } }
 @media (prefers-reduced-motion: reduce) { .navpill.cta:hover::before, .ld-cta:hover::before { animation: none; } }
