@@ -1,15 +1,36 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { GROUPS, SPECIALTIES } from '@/lib/specialties';
 
-/* Landing — "종이 위의 시네마" (DESIGN-V3-SPEC). 섹션당 카피 ≤2줄 + 시각 1개.
- * 모션: IO reveal만. 라이브러리 0. reduced-motion/no-JS 완독 가능. */
+/* Landing — Bio-Age Dashboard 구도 × gatherEMR 색 (사용자 확정 벤치마킹).
+ * 히어로 = 영상 위 하단 정렬 잉크-유리 대시보드: 주인공 카드(카운트업) +
+ * 타임라인 티커 + 보조 카드 4장(hover 확장 1장). 모션 = 스프링 이징 + 스태거. */
+
+/* count-up (Bio-Age pattern: 1.8s, 40 steps) */
+function useCountUp(target: number, duration = 1800) {
+  const [v, setV] = useState(0);
+  useEffect(() => {
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) { setV(target); return; }
+    let i = 0; const steps = 40;
+    const t = setInterval(() => {
+      i++; setV(Math.round((target * i) / steps));
+      if (i >= steps) clearInterval(t);
+    }, duration / steps);
+    return () => clearInterval(t);
+  }, [target, duration]);
+  return v;
+}
+
+const TICKS = Array.from({ length: 61 }, (_, i) => i);
 
 export default function Landing() {
+  const sentences = useCountUp(12);
+  const [snapOpen, setSnapOpen] = useState(false);
+  const [drop, setDrop] = useState<{ x: number; y: number } | null>(null);
+
   useEffect(() => {
-    // IO reveal (.ld-io → .in)
     const io = new IntersectionObserver(
       (es) => es.forEach((e) => e.isIntersecting && e.target.classList.add('in')),
       { threshold: 0.35 },
@@ -18,29 +39,120 @@ export default function Landing() {
     return () => io.disconnect();
   }, []);
 
+  useEffect(() => {
+    document.body.style.overflow = drop ? 'hidden' : '';
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setDrop(null);
+    addEventListener('keydown', onKey);
+    return () => { document.body.style.overflow = ''; removeEventListener('keydown', onKey); };
+  }, [drop]);
+
+  function launch(e: React.MouseEvent<HTMLButtonElement>) {
+    const r = e.currentTarget.getBoundingClientRect();
+    setDrop({ x: r.left + r.width / 2, y: r.top + r.height / 2 });
+  }
+
   return (
     <main className="ld">
-      {/* floating liquid-glass nav */}
+      {/* floating ink-glass nav — 좌측 물방울 런처 */}
       <nav className="gnav">
+        <button className="droplet" onClick={launch}>시작하기</button>
         <span className="brand">gatherEMR</span>
         <span className="links">
           <a href="#demo">데모</a>
           <a href="#specialties">26분과</a>
         </span>
-        <Link href="/app" className="btn">차트 넣어보기</Link>
       </nav>
 
-      {/* S0 — hero: 무드 영상 (종이 위의 빛) + 카피 */}
+      {/* 물방울 확산 → 분과 전환 오버레이 */}
+      {drop && (
+        <div className="drop-overlay" style={{ ['--ox' as string]: `${drop.x}px`, ['--oy' as string]: `${drop.y}px` } as React.CSSProperties}>
+          <div className="drop-blob b2" aria-hidden="true" />
+          <div className="drop-blob b1" aria-hidden="true" />
+          <div className="drop-panel" role="dialog" aria-label="분과 선택">
+            <button className="drop-close" onClick={() => setDrop(null)}>✕ 닫기</button>
+            <h2 className="drop-title">어느 분과세요?</h2>
+            <div className="drop-groups">
+              {GROUPS.map((gr, gi) => (
+                <div key={gr.id} className="drop-group" style={{ ['--c' as string]: gr.color, ['--dd' as string]: `${420 + gi * 90}ms` } as React.CSSProperties}>
+                  <span className="drop-group-name">{gr.label}</span>
+                  <span className="drop-chips">
+                    {SPECIALTIES.filter((s) => s.group === gr.id).map((s) => (
+                      <Link key={s.id} href={`/app?s=${s.id}`} className="drop-chip">{s.name}</Link>
+                    ))}
+                  </span>
+                </div>
+              ))}
+            </div>
+            <Link href="/app" className="drop-direct">분과는 이따 고를게요 — 바로 시작 →</Link>
+          </div>
+        </div>
+      )}
+
+      {/* S0 — hero: 영상 위 잉크-유리 대시보드 (Bio-Age 구도) */}
       <section className="ld-hero">
         <video className="ld-video" autoPlay muted loop playsInline poster="/hero-poster.jpg" aria-hidden="true">
           <source src="/hero-mood.webm" type="video/webm" />
         </video>
-        <div className="ld-hero-copy">
-          <h1 className="ink play">차트는 길다.<br />봐야 할 것은 짧다.</h1>
-          <p>의대 교수를 위한 분과별 EMR 요약 — 문장마다 원문 근거.</p>
-          <Link href="/app" className="btn ld-cta">차트 넣어보기 →</Link>
+
+        <div className="ld-dash">
+          {/* 좌: 주인공 카드 */}
+          <div className="ld-dash-left">
+            <div className="ld-main-card ink-glass hv" style={{ ['--hd' as string]: '300ms' } as React.CSSProperties}>
+              <div className="ld-main-spin" aria-hidden="true" />
+              <div className="ld-main-body">
+                <p className="ld-main-kicker hv" style={{ ['--hd' as string]: '600ms' } as React.CSSProperties}>차트는 길다. 봐야 할 것은</p>
+                <div className="ld-main-num hv" style={{ ['--hd' as string]: '800ms' } as React.CSSProperties}>
+                  <span className="mono num">{sentences}</span>
+                  <span className="unit">문장</span>
+                </div>
+                <p className="ld-main-sub">3일치 기록 4,200자 → 분과의 눈으로 요약</p>
+              </div>
+            </div>
+            <div className="ld-badge-row hv" style={{ ['--hd' as string]: '1000ms' } as React.CSSProperties}>
+              <span className="ld-pill">근거 없는 문장 0</span>
+            </div>
+            {/* 타임라인 티커 — 차트의 시계가 흐른다 */}
+            <div className="ld-ticker hv" style={{ ['--hd' as string]: '1100ms' } as React.CSSProperties} aria-hidden="true">
+              <div className="ld-ticker-track">
+                {[0, 1].map((set) => (
+                  <div key={set} className="ld-ticker-set">
+                    {TICKS.map((i) => (
+                      <span key={i} className={`tick${i % 10 === 0 ? ' t10' : i % 5 === 0 ? ' t5' : ''}`} />
+                    ))}
+                  </div>
+                ))}
+              </div>
+              <span className="ld-ticker-center" />
+              <div className="ld-ticker-times mono"><span>18:42</span><span>19:08</span><span>19:22</span><span>20:46</span><span>21:10</span></div>
+            </div>
+          </div>
+
+          {/* 우: 보조 카드 4 */}
+          <div className="ld-dash-right">
+            <Link href="/app" className="ld-info ink-glass hv" style={{ ['--hd' as string]: '500ms' } as React.CSSProperties}>
+              <span className="ld-info-title">모든 형식으로</span>
+              <span className="ld-info-foot"><span className="mono dim">PDF · 이미지 · HWP · DOCX</span><span className="ld-arrow">→</span></span>
+            </Link>
+            <Link href="/app" className="ld-info ink-glass hv" style={{ ['--hd' as string]: '650ms' } as React.CSSProperties}>
+              <span className="ld-info-title">전송 전 비식별</span>
+              <span className="ld-info-foot"><span className="mono dim">홍길동 → ███</span><span className="ld-arrow">→</span></span>
+            </Link>
+            <button
+              className={`ld-info ld-snap${snapOpen ? ' open' : ''}`}
+              onMouseEnter={() => setSnapOpen(true)} onMouseLeave={() => setSnapOpen(false)}
+              onClick={() => setSnapOpen((o) => !o)}
+              style={{ ['--hd' as string]: '800ms' } as React.CSSProperties}
+            >
+              <span className="ld-info-title">근거 연결</span>
+              <span className="ld-snap-body">모든 문장은 원문 인용과 위치를 가집니다. 근거를 찾지 못한 문장은 화면에 나타나지 않습니다 — 확인은 언제나 당신의 눈으로.</span>
+              <span className="ld-info-foot"><span className="dim">문장 → 원문 점프</span><span className="ld-arrow">{snapOpen ? '↓' : '↑'}</span></span>
+            </button>
+            <Link href="/app" className="ld-info ink-glass hv" style={{ ['--hd' as string]: '950ms' } as React.CSSProperties}>
+              <span className="ld-info-title">26개 분과 렌즈</span>
+              <span className="ld-info-foot"><span className="dim">내과 9세부 포함</span><span className="ld-arrow">→</span></span>
+            </Link>
+          </div>
         </div>
-        <div className="ld-scrollcue" aria-hidden="true">스크롤</div>
       </section>
 
       {/* S2 — 해법 = 데모: 문장 → 원문 연결선 */}
@@ -74,16 +186,13 @@ export default function Landing() {
         <h2 className="ld-h2 ink">26개 전문과목,<br />각자의 렌즈.</h2>
         <div className="ld-groups">
           {GROUPS.map((gr, gi) => (
-            <div key={gr.id} className="ld-group-card" style={{ ['--c' as string]: gr.color, ['--bg' as string]: gr.soft, ['--d' as string]: `${gi * 110}ms` } as React.CSSProperties}>
-              <div className="ld-group-head">
-                <span className="ld-group-name">{gr.label}</span>
-                <span className="ld-group-count">{SPECIALTIES.filter((s) => s.group === gr.id).length}</span>
-              </div>
-              <div className="ld-group-chips">
+            <div key={gr.id} className="ld-group" style={{ ['--c' as string]: gr.color, ['--d' as string]: `${gi * 120}ms` } as React.CSSProperties}>
+              <span className="ld-group-name">{gr.label}</span>
+              <span className="ld-group-chips">
                 {SPECIALTIES.filter((s) => s.group === gr.id).map((s, i) => (
-                  <Link key={s.id} href="/app" className="ld-chip" style={{ ['--d' as string]: `${gi * 110 + i * 35}ms` } as React.CSSProperties}>{s.name}</Link>
+                  <Link key={s.id} href="/app" className="ld-chip" style={{ ['--d' as string]: `${gi * 120 + i * 40}ms` } as React.CSSProperties}>{s.name}</Link>
                 ))}
-              </div>
+              </span>
             </div>
           ))}
         </div>

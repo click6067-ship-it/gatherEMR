@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { type Specialty, type Template } from '@/lib/specialties';
+import { SPECIALTIES, type Specialty, type Template } from '@/lib/specialties';
 import { SpecialtyPicker, type Picked } from '../components/SpecialtyPicker';
 import { ChartLens } from '../components/ChartLens';
 import { getSessionId } from '@/lib/session';
@@ -46,6 +46,17 @@ export default function Home() {
   useEffect(() => {
     if (sel && markRef.current) markRef.current.scrollIntoView({ block: 'center', behavior: 'smooth' });
   }, [sel]);
+
+  // deep-link from the landing droplet: /app?s=<specialtyId>&sub=<subId>
+  useEffect(() => {
+    const q = new URLSearchParams(location.search);
+    const sid = q.get('s');
+    if (!sid) return;
+    const sp = SPECIALTIES.find((x) => x.id === sid);
+    if (!sp) return;
+    const t = sp.subspecialties?.find((u) => u.id === q.get('sub')) ?? null;
+    setSpecialty(sp); setSub(t); setPickedLabel(t ? t.name : sp.name); setStage('input');
+  }, []);
 
   const template: Template | null = sub ?? specialty;
   const chosenName = pickedLabel || specialty?.name;
