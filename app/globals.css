@@ -183,3 +183,9 @@ a { color: inherit; text-decoration: none; }
 .appshell .lens .band { position: absolute; left: 6px; right: 6px; z-index: 0; border-radius: 6px; pointer-events: none; opacity: 0; background: rgba(100,206,251,.16); transition: opacity .15s; }
 .appshell .lens:hover .band { opacity: 1; }
 @media (prefers-reduced-motion: reduce) { .appshell .lens .lens-line { color: rgba(255,255,255,.85); } .appshell .lens .band { display: none; } }
+
+/* ── /app layout gap-fillers (final-review fix) ── */
+.appshell .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.appshell .chips { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0; }
+.appshell .im-wrap { display: contents; }
+.appshell .panel { max-width: 760px; }
