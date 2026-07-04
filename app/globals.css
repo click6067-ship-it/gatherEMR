@@ -470,3 +470,20 @@ details.oneline input { width: 100%; padding: 10px 12px; border: 1px solid var(-
 /* ── ScrubHero fallback (mobile / reduced-motion): autoplay + dashboard, no scrub ── */
 .scrub-fallback { position: relative; min-height: 100svh; display: flex; align-items: flex-end; overflow: clip; background: var(--void); }
 .scrub-fallback-inner { position: relative; z-index: 10; width: 100%; padding: 96px max(20px, 4vw) max(24px, 4vh); }
+
+/* ── 25분과 헤드라인이 문장형일 때: 타이틀보다 작게(리드 문장) ── */
+.ld-h2-lead { font-size: clamp(20px, 2.6vw, 28px); font-weight: 600; line-height: 1.42; letter-spacing: -.015em; }
+
+/* ── /app 하이브리드 셸 — 히어로 톤 다크 캔버스 + 라이트 가독 콘텐츠 카드 ── */
+.appshell { min-height: 100vh; position: relative; color: #f5f4ef;
+  background:
+    radial-gradient(1100px 640px at 50% -8%, rgba(47, 107, 255, .16), transparent 62%),
+    linear-gradient(180deg, #06080f, #0a0e18 60%); }
+.appshell .wrap { position: relative; z-index: 1; padding-top: 26px; }
+/* 라이트 콘텐츠 카드가 다크 캔버스 위에 뜸(가독성 우선) + 블루 림으로 히어로 연결 */
+.appshell .sheet, .appshell .pane {
+  background: rgba(255, 255, 255, .95);
+  box-shadow: 0 26px 64px -26px rgba(0, 0, 0, .7), 0 0 0 1px rgba(47, 107, 255, .16), inset 0 1px 0 rgba(255, 255, 255, .8); }
+/* 다크 캔버스 위에 바로 놓인 텍스트(결과 헤더) → 라이트 */
+.appshell .result-head { color: rgba(245, 244, 239, .72); }
+.appshell .result-head b { color: #f5f4ef; }

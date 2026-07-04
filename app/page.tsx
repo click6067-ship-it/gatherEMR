@@ -49,7 +49,7 @@ export default function Landing() {
       <nav className="gnav">
         <span className="gnav-brand">goldentime</span>
         <span className="gnav-right">
-          <a href="#demo" className="navpill">ABOUT US</a>
+          <a href="#specialties" className="navpill">ABOUT US</a>
           <Link href="/app" className="navpill cta"><span>GET STARTED</span></Link>
         </span>
       </nav>
@@ -65,7 +65,6 @@ export default function Landing() {
             </div>
             <nav className="drop-rows">
               <Link href="/app" className="drop-row" style={{ ['--dd' as string]: '380ms' } as React.CSSProperties}><span>시작하기</span><span className="drop-arr">→</span></Link>
-              <a href="#demo" className="drop-row" onClick={() => setDrop(null)} style={{ ['--dd' as string]: '460ms' } as React.CSSProperties}><span>데모</span><span className="drop-arr">→</span></a>
               <a href="#specialties" className="drop-row" onClick={() => setDrop(null)} style={{ ['--dd' as string]: '540ms' } as React.CSSProperties}><span>25개 분과</span><span className="drop-arr">→</span></a>
             </nav>
             <div className="drop-groups">
@@ -89,37 +88,9 @@ export default function Landing() {
       {/* S0 — hero: 핀 스크럽 — 영상 스크럽 + 카피 비트 + 페이오프 대시보드 */}
       <ScrubHero />
 
-      {/* S2 — 해법 = 데모: 문장 → 원문 연결선 */}
-      <section id="demo" className="ld-s2 ld-io">
-        <h2 className="ld-h2 ink">분과를 고르면,<br />그 분과의 눈으로.</h2>
-        <div className="sheet ld-demo-sheet">
-        <div className="ld-demo">
-          <div className="ld-demo-pane">
-            <div className="ld-demo-label">순환기내과 요약</div>
-            <div className="ld-demo-item on"><span className="badge derived">추론</span> Troponin 0.8 → 2.1 상승, r/o NSTEMI</div>
-            <div className="ld-demo-item"><span className="badge uncertain">불확실</span> warfarin 복용 여부 불명 (INR 1.7)</div>
-            <div className="ld-demo-item"><span className="badge explicit">원문</span> EKG no STEMI criteria, QTc 458</div>
-          </div>
-          <svg className="ld-wire" viewBox="0 0 120 80" aria-hidden="true">
-            <path d="M4,18 C 50,18 70,52 116,52" fill="none" />
-            <circle cx="116" cy="52" r="3" />
-          </svg>
-          <div className="ld-demo-pane mono ld-demo-src">
-            <div className="ld-demo-label">비식별 원문</div>
-            [Lab 19:22] Troponin-I 0.8{'\n'}
-            <mark>[Lab 20:46] Troponin-I 2.1</mark>{'\n'}
-            Cr 1.8 · eGFR 38 · K 5.1 · INR 1.7
-          </div>
-        </div>
-        <p className="ld-sub">문장을 누르면 원문의 그 자리로 — 확인은 언제나 당신의 눈으로.</p>
-        </div>
-      </section>
-
-      <hr className="scanline" />
-
       {/* S3 — 25분과 */}
       <section id="specialties" className="ld-s3 ld-io">
-        <h2 className="ld-h2 ink">25개 전문과목,<br />각자의 렌즈.</h2>
+        <h2 className="ld-h2 ld-h2-lead ink">25개 분과별로, 그 분과가 가장 먼저 보는 주제 중심으로 정리합니다.</h2>
         <div className="ld-groups">
           {GROUPS.map((gr, gi) => (
             <div key={gr.id} className="ld-group" style={{ ['--c' as string]: gr.color, ['--d' as string]: `${gi * 120}ms` } as React.CSSProperties}>

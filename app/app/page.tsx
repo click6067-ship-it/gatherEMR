@@ -19,9 +19,6 @@ Pain 7/10, sweating (+), left shoulder radiation (+)
 Repeat Troponin ordered 21:10 - pending at sign-out.`;
 
 type Stage = 'pick' | 'input' | 'preview' | 'result';
-const STEP_LABELS: [Stage, string][] = [
-  ['pick', '01 분과'], ['input', '02 차트'], ['preview', '03 확인'], ['result', '04 결과'],
-];
 
 const LABEL_KO: Record<ResolvedItem['label'], string> = { explicit: '원문', derived: '추론', uncertain: '불확실' };
 
@@ -104,18 +101,7 @@ export default function Home() {
   }
 
   return (
-    <main>
-      <header className="top">
-        <div className="wrap">
-          <span className="brand">gatherEMR</span>
-          <span className="crumb">
-            {STEP_LABELS.map(([s, t], i) => (
-              <span key={s}>{i > 0 && ' · '}<b style={{ color: stage === s ? undefined : 'var(--muted)' }}>{t}</b></span>
-            ))}
-          </span>
-        </div>
-      </header>
-
+    <main className="appshell">
       <div className="wrap">
         {err && <div className="alert">⚠ {err}</div>}
 
@@ -177,9 +163,9 @@ export default function Home() {
 
         {stage === 'result' && summary && (
           <section className="step" style={{ paddingBottom: 40 }}>
-            <div className="row" style={{ justifyContent: 'space-between', margin: '14px 0 10px' }}>
-              <div style={{ fontSize: 13, color: 'var(--muted)' }}>
-                <b style={{ color: 'var(--ink)' }}>{chosenName}</b> 요약 · 문장을 누르면 → 오른쪽 원문 위치로.
+            <div className="row result-head" style={{ justifyContent: 'space-between', margin: '14px 0 10px' }}>
+              <div style={{ fontSize: 13 }}>
+                <b>{chosenName}</b> 요약 · 문장을 누르면 → 오른쪽 원문 위치로.
               </div>
               <button className="btn ghost" onClick={reset}>새 케이스</button>
             </div>
