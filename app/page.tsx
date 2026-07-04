@@ -1,7 +1,8 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { GROUPS, SPECIALTIES, type Specialty, type Template } from '@/lib/specialties';
+import { type Specialty, type Template } from '@/lib/specialties';
+import { SpecialtyPicker, type Picked } from './components/SpecialtyPicker';
 import { getSessionId } from '@/lib/session';
 import type { ResolvedItem, ResolvedSummary } from '@/lib/summary/summarize';
 
@@ -16,18 +17,18 @@ Pain 7/10, sweating (+), left shoulder radiation (+)
 [Labs] Troponin-I 0.8 (19:22) -> 2.1 (20:46). Cr 1.8, eGFR 38, K 5.1, INR 1.7.
 Repeat Troponin ordered 21:10 - pending at sign-out.`;
 
-type Stage = 'group' | 'specialty' | 'sub' | 'input' | 'preview' | 'result';
+type Stage = 'pick' | 'input' | 'preview' | 'result';
 const STEP_LABELS: [Stage, string][] = [
-  ['group', '01 계열'], ['specialty', '02 분과'], ['input', '03 차트'], ['preview', '04 확인'], ['result', '05 결과'],
+  ['pick', '01 분과'], ['input', '02 차트'], ['preview', '03 확인'], ['result', '04 결과'],
 ];
 
 const LABEL_KO: Record<ResolvedItem['label'], string> = { explicit: '원문', derived: '추론', uncertain: '불확실' };
 
 export default function Home() {
-  const [stage, setStage] = useState<Stage>('group');
-  const [group, setGroup] = useState<string | null>(null);
+  const [stage, setStage] = useState<Stage>('pick');
   const [specialty, setSpecialty] = useState<Specialty | null>(null);
   const [sub, setSub] = useState<Template | null>(null);
+  const [pickedLabel, setPickedLabel] = useState('');
   const [text, setText] = useState('');
   const [focus, setFocus] = useState('');
   const [consent, setConsent] = useState(false);
@@ -46,15 +47,9 @@ export default function Home() {
   }, [sel]);
 
   const template: Template | null = sub ?? specialty;
-  const chosenName = sub ? `${specialty?.name} · ${sub.name}` : specialty?.name;
+  const chosenName = pickedLabel || specialty?.name;
 
-  function pickGroup(g: string) { setGroup(g); setStage('specialty'); }
-  function pickSpecialty(s: Specialty) {
-    setSpecialty(s); setSub(null);
-    if (s.subspecialties && s.subspecialties.length) setStage('sub');
-    else setStage('input');
-  }
-  function pickSub(t: Template | null) { setSub(t); setStage('input'); }
+  function onPick(p: Picked) { setSpecialty(p.specialty); setSub(p.sub); setPickedLabel(p.label); setStage('input'); }
 
   async function onFile(f: File) {
     setExtracting(true); setErr('');
@@ -92,11 +87,9 @@ export default function Home() {
   }
 
   function reset() {
-    setStage('group'); setGroup(null); setSpecialty(null); setSub(null);
+    setStage('pick'); setSpecialty(null); setSub(null); setPickedLabel('');
     setText(''); setFocus(''); setConsent(false); setMasked(''); setSummary(null); setSel(null); setErr('');
   }
-
-  const groupSpecialties = SPECIALTIES.filter((s) => s.group === group);
 
   return (
     <main>
@@ -114,53 +107,17 @@ export default function Home() {
       <div className="wrap">
         {err && <div className="alert">⚠ {err}</div>}
 
-        {stage === 'group' && (
+        {stage === 'pick' && (
           <section className="step panel">
             <h1 className="q">어느 분과세요?</h1>
-            <p className="sub">차트를 자기 분과 관점으로 요약해 드립니다. 계열부터 고르세요.</p>
-            <div className="grid">
-              {GROUPS.map((g) => (
-                <button key={g.id} className="choice" onClick={() => pickGroup(g.id)}>
-                  {g.label}
-                  <small>{SPECIALTIES.filter((s) => s.group === g.id).map((s) => s.name).join(' · ')}</small>
-                </button>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {stage === 'specialty' && (
-          <section className="step panel">
-            <button className="back" onClick={() => setStage('group')}>← 계열</button>
-            <h1 className="q">분과를 고르세요</h1>
-            <p className="sub">{GROUPS.find((g) => g.id === group)?.label}</p>
-            <div className="grid g2">
-              {groupSpecialties.map((s) => (
-                <button key={s.id} className="choice" onClick={() => pickSpecialty(s)}>
-                  {s.name}{s.subspecialties ? <small>세부 {s.subspecialties.length}과 선택 →</small> : null}
-                </button>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {stage === 'sub' && specialty && (
-          <section className="step panel">
-            <button className="back" onClick={() => setStage('specialty')}>← 분과</button>
-            <h1 className="q">{specialty.name} — 세부분과</h1>
-            <p className="sub">세부 전공을 고르면 그 관점으로 요약합니다.</p>
-            <div className="grid g2">
-              <button className="choice" onClick={() => pickSub(null)}>{specialty.name} 일반</button>
-              {specialty.subspecialties?.map((t) => (
-                <button key={t.id} className="choice" onClick={() => pickSub(t)}>{t.name}</button>
-              ))}
-            </div>
+            <p className="sub">차트를 자기 분과 관점으로 요약해 드립니다. 계열을 눌러 펼치고 분과를 고르세요.</p>
+            <SpecialtyPicker onPick={onPick} />
           </section>
         )}
 
         {stage === 'input' && template && (
           <section className="step panel">
-            <button className="back" onClick={() => setStage(specialty?.subspecialties ? 'sub' : 'specialty')}>← 분과</button>
+            <button className="back" onClick={() => setStage('pick')}>← 분과 선택</button>
             <h1 className="q">차트를 붙여넣으세요</h1>
             <p className="sub"><b>{chosenName}</b> 관점으로 요약합니다. 식별정보는 다음 단계에서 가립니다.</p>
             <div className="row" style={{ marginBottom: 8 }}>

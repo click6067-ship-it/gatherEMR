@@ -6,11 +6,11 @@
 
 export type GroupId = 'internal' | 'surgical' | 'diagnostic' | 'emergency';
 
-export const GROUPS: { id: GroupId; label: string }[] = [
-  { id: 'internal', label: '내과·진료계열' },
-  { id: 'surgical', label: '외과·수술계열' },
-  { id: 'diagnostic', label: '진단·지원계열' },
-  { id: 'emergency', label: '응급·사회의학계열' },
+export const GROUPS: { id: GroupId; label: string; color: string; soft: string }[] = [
+  { id: 'internal', label: '내과·진료계열', color: '#2563eb', soft: '#eff4ff' },
+  { id: 'surgical', label: '외과·수술계열', color: '#dc2626', soft: '#fef2f2' },
+  { id: 'diagnostic', label: '진단·지원계열', color: '#7c3aed', soft: '#f5f3ff' },
+  { id: 'emergency', label: '응급·사회의학계열', color: '#059669', soft: '#ecfdf5' },
 ];
 
 /** A summary template = the lens for one specialty or subspecialty. */
