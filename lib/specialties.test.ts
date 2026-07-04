@@ -2,11 +2,11 @@ import { describe, it, expect } from 'vitest';
 import { SPECIALTIES, GROUPS, findSpecialty, resolveTemplate, type Template } from './specialties';
 
 describe('specialty registry', () => {
-  it('has 26 specialties across the 4 groups (internal 8, surgical 9, diagnostic 6, emergency 3)', () => {
-    expect(SPECIALTIES).toHaveLength(26);
+  it('has 25 specialties across the 4 groups (internal 7, surgical 9, diagnostic 6, emergency 3)', () => {
+    expect(SPECIALTIES).toHaveLength(25);
     expect(GROUPS.map((g) => g.id)).toEqual(['internal', 'surgical', 'diagnostic', 'emergency']);
     const count = (g: string) => SPECIALTIES.filter((s) => s.group === g).length;
-    expect(count('internal')).toBe(8);
+    expect(count('internal')).toBe(7);
     expect(count('surgical')).toBe(9);
     expect(count('diagnostic')).toBe(6);
     expect(count('emergency')).toBe(3);

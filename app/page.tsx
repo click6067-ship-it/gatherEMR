@@ -53,27 +53,35 @@ export default function Landing() {
 
   return (
     <main className="ld">
-      {/* floating ink-glass nav — 좌측 물방울 런처 */}
+      {/* top nav — EVR 구도: 좌 MENU · 중앙 goldentime · 우 ABOUT US/GET STARTED */}
       <nav className="gnav">
-        <button className="droplet" onClick={launch}>시작하기</button>
-        <span className="brand">gatherEMR</span>
-        <span className="links">
-          <a href="#demo">데모</a>
-          <a href="#specialties">26분과</a>
+        <button className="navpill menu" onClick={launch}><span className="bars" aria-hidden="true" />MENU</button>
+        <span className="gnav-brand">goldentime</span>
+        <span className="gnav-right">
+          <a href="#demo" className="navpill">ABOUT US</a>
+          <Link href="/app" className="navpill fill">GET STARTED</Link>
         </span>
       </nav>
 
-      {/* 물방울 확산 → 분과 전환 오버레이 */}
+      {/* 확산 → 분과 전환 오버레이 (화이트 드로어) */}
       {drop && (
         <div className="drop-overlay" style={{ ['--ox' as string]: `${drop.x}px`, ['--oy' as string]: `${drop.y}px` } as React.CSSProperties}>
           <div className="drop-blob b2" aria-hidden="true" />
           <div className="drop-blob b1" aria-hidden="true" />
-          <div className="drop-panel" role="dialog" aria-label="분과 선택">
-            <button className="drop-close" onClick={() => setDrop(null)}>✕ 닫기</button>
-            <h2 className="drop-title">어느 분과세요?</h2>
+          <div className="drop-panel" role="dialog" aria-label="메뉴">
+            <div className="drop-head">
+              <button className="navpill dark" onClick={() => setDrop(null)}>✕ CLOSE</button>
+              <span className="drop-brand">goldentime</span>
+            </div>
+            <nav className="drop-rows">
+              <Link href="/app" className="drop-row" style={{ ['--dd' as string]: '380ms' } as React.CSSProperties}><span>시작하기</span><span className="drop-arr">→</span></Link>
+              <a href="#demo" className="drop-row" onClick={() => setDrop(null)} style={{ ['--dd' as string]: '460ms' } as React.CSSProperties}><span>데모</span><span className="drop-arr">→</span></a>
+              <a href="#specialties" className="drop-row" onClick={() => setDrop(null)} style={{ ['--dd' as string]: '540ms' } as React.CSSProperties}><span>25개 분과</span><span className="drop-arr">→</span></a>
+            </nav>
             <div className="drop-groups">
+              <span className="drop-sub">분과 바로 선택</span>
               {GROUPS.map((gr, gi) => (
-                <div key={gr.id} className="drop-group" style={{ ['--c' as string]: gr.color, ['--dd' as string]: `${420 + gi * 90}ms` } as React.CSSProperties}>
+                <div key={gr.id} className="drop-group" style={{ ['--c' as string]: gr.color, ['--dd' as string]: `${640 + gi * 80}ms` } as React.CSSProperties}>
                   <span className="drop-group-name">{gr.label}</span>
                   <span className="drop-chips">
                     {SPECIALTIES.filter((s) => s.group === gr.id).map((s) => (
@@ -83,7 +91,7 @@ export default function Landing() {
                 </div>
               ))}
             </div>
-            <Link href="/app" className="drop-direct">분과는 이따 고를게요 — 바로 시작 →</Link>
+            <footer className="drop-foot"><span>GATHEREMR — 비식별 EMR 분과별 요약</span><span>© 2026</span></footer>
           </div>
         </div>
       )}
@@ -148,7 +156,7 @@ export default function Landing() {
               <span className="ld-info-foot"><span className="dim">문장 → 원문 점프</span><span className="ld-arrow">{snapOpen ? '↓' : '↑'}</span></span>
             </button>
             <Link href="/app" className="ld-info ink-glass hv" style={{ ['--hd' as string]: '950ms' } as React.CSSProperties}>
-              <span className="ld-info-title">26개 분과 렌즈</span>
+              <span className="ld-info-title">25개 분과 렌즈</span>
               <span className="ld-info-foot"><span className="dim">내과 9세부 포함</span><span className="ld-arrow">→</span></span>
             </Link>
           </div>
@@ -181,9 +189,9 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* S3 — 26분과 */}
+      {/* S3 — 25분과 */}
       <section id="specialties" className="ld-s3 ld-io">
-        <h2 className="ld-h2 ink">26개 전문과목,<br />각자의 렌즈.</h2>
+        <h2 className="ld-h2 ink">25개 전문과목,<br />각자의 렌즈.</h2>
         <div className="ld-groups">
           {GROUPS.map((gr, gi) => (
             <div key={gr.id} className="ld-group" style={{ ['--c' as string]: gr.color, ['--d' as string]: `${gi * 120}ms` } as React.CSSProperties}>

@@ -44,7 +44,7 @@ body::before {
 }
 /* liquid glass material — 리서치 파라미터(라이트 배경): blur 10~15, 스펙큘러 절제(.5),
    하단 다크 라인으로 유리 두께감. 텍스트 시트엔 굴절 없음(가독성). */
-.glass, .sheet, .top .wrap, .gnav, .picker .sec, .pane {
+.glass, .sheet, .top .wrap, .picker .sec, .pane {
   background: var(--glass);
   -webkit-backdrop-filter: blur(14px) saturate(1.7);
   backdrop-filter: blur(14px) saturate(1.7);
@@ -55,25 +55,24 @@ body::before {
     inset 1px 0 0 rgba(255, 255, 255, .25),
     var(--glass-shadow);
 }
-/* 굴절(lensing) = 떠 있는 캡슐에만 (Aave: refraction on few floating elements).
-   Chromium이 url() 파트를 읽고, 미지원 브라우저는 아래 -webkit-/선행 선언으로 폴백. */
-.top .wrap, .gnav {
+/* 굴절(lensing) = 떠 있는 캡슐에만 (Aave: refraction on few floating elements). */
+.top .wrap {
   -webkit-backdrop-filter: blur(12px) saturate(1.7);
   backdrop-filter: blur(12px) saturate(1.7);
   backdrop-filter: url(#lg-lens) blur(12px) saturate(1.7);
 }
 /* sheen — 유리 표면 사광 (좌상단, 텍스트 간섭 없는 저강도) */
-.sheet, .gnav, .top .wrap { position: relative; }
-.sheet::after, .gnav::after, .top .wrap::after {
+.sheet, .top .wrap { position: relative; }
+.sheet::after, .top .wrap::after {
   content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
   background: linear-gradient(133deg, rgba(255, 255, 255, .4), rgba(255, 255, 255, .06) 30%, transparent 55%);
   mix-blend-mode: soft-light;
 }
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  .glass, .sheet, .top .wrap, .gnav, .picker .sec, .pane { background: rgba(255, 255, 255, .92); }
+  .glass, .sheet, .top .wrap, .picker .sec, .pane { background: rgba(255, 255, 255, .92); }
 }
 @media (prefers-reduced-transparency: reduce) {
-  .glass, .sheet, .top .wrap, .gnav, .picker .sec, .pane {
+  .glass, .sheet, .top .wrap, .picker .sec, .pane {
     background: rgba(255, 255, 255, .96);
     -webkit-backdrop-filter: none; backdrop-filter: none;
   }
@@ -167,52 +166,59 @@ details.oneline input { width: 100%; padding: 10px 12px; border: 1px solid var(-
 /* ── Landing "종이 위의 시네마" (DESIGN-V3-SPEC) ── */
 .ld { overflow-x: clip; }
 /* landing floating glass nav */
-.gnav { position: fixed; top: 12px; left: 50%; transform: translateX(-50%); z-index: 50;
-  display: flex; align-items: center; gap: 18px; height: 58px; border-radius: 999px;
-  padding: 0 22px 0 8px; width: min(1040px, calc(100% - 28px));
-  background: rgba(23, 25, 28, .55) !important; border-color: rgba(255, 255, 255, .16) !important; }
-.gnav .brand { color: #f5f4ef; }
-.gnav .links { display: flex; gap: 18px; margin-left: auto; }
-.gnav .links a { color: rgba(245, 244, 239, .72); text-decoration: none; font-size: 13.5px; font-weight: 500; transition: color .15s; }
-.gnav .links a:hover { color: #fff; }
-@media (max-width: 640px) { .gnav .links { display: none; } }
-
-/* 물방울 런처 — 좌측, 항상 일렁임 */
-.droplet { position: relative; padding: 13px 24px; font: inherit; font-weight: 700; font-size: 14px;
-  color: #17191c; background: #f5f4ef; border: 1px solid rgba(255, 255, 255, .5); cursor: pointer;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .9), 0 10px 26px -12px rgba(23, 25, 28, .6);
-  animation: blobmorph 6.5s ease-in-out infinite; transition: transform .3s cubic-bezier(.16, 1, .3, 1); }
-.droplet:hover { transform: scale(1.07); }
-@keyframes blobmorph {
-  0%, 100% { border-radius: 46% 54% 52% 48% / 54% 46% 54% 46%; }
-  25% { border-radius: 58% 42% 46% 54% / 44% 58% 42% 56%; }
-  50% { border-radius: 48% 52% 58% 42% / 52% 46% 58% 42%; }
-  75% { border-radius: 52% 48% 42% 58% / 46% 56% 44% 56%; } }
+.gnav { position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 22px max(22px, 3vw) 0; pointer-events: none; }
+.gnav > * { pointer-events: auto; }
+.gnav-brand { position: absolute; left: 50%; transform: translateX(-50%); font-weight: 700; letter-spacing: -.02em; font-size: 17px; color: var(--ink); }
+.gnav-right { display: flex; gap: 10px; align-items: center; }
+/* nav pills — 크게 (EVR) */
+.navpill { display: inline-flex; align-items: center; gap: 10px; font: inherit; font-size: 13.5px; font-weight: 700;
+  letter-spacing: .08em; text-decoration: none; cursor: pointer; border-radius: 999px; padding: 14px 26px;
+  color: #f5f4ef; background: rgba(23, 25, 28, .5); border: 1px solid rgba(255, 255, 255, .18);
+  -webkit-backdrop-filter: blur(14px) saturate(1.5); backdrop-filter: blur(14px) saturate(1.5);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .18); transition: background .15s, opacity .15s; }
+.navpill:hover { background: rgba(23, 25, 28, .68); }
+.navpill.fill { background: #f5f4ef; color: #17191c; border-color: rgba(255, 255, 255, .6);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .9), 0 10px 26px -12px rgba(23, 25, 28, .5); }
+.navpill.fill:hover { background: #fff; }
+.navpill.dark { background: #17191c; color: #f5f4ef; border-color: transparent; -webkit-backdrop-filter: none; backdrop-filter: none; }
+.navpill .bars { display: inline-block; width: 16px; height: 10px; border-top: 2px solid currentColor; border-bottom: 2px solid currentColor; }
+@media (max-width: 700px) { .gnav-brand { display: none; } .navpill { padding: 12px 18px; font-size: 12px; } }
 
 /* 물방울 확산 오버레이 → 분과 전환 */
 .drop-overlay { position: fixed; inset: 0; z-index: 100; }
 .drop-blob { position: fixed; left: var(--ox); top: var(--oy); width: 64px; height: 64px; margin: -32px 0 0 -32px;
   animation: dropexpand .8s cubic-bezier(.22, 1, .36, 1) forwards, blobmorph 2.6s ease-in-out infinite; }
-.drop-blob.b1 { background: rgba(21, 23, 27, .98); }
-.drop-blob.b2 { background: rgba(37, 99, 235, .45); animation-delay: .05s, 0s; }
+.drop-blob.b1 { background: rgba(251, 250, 247, .99); }
+.drop-blob.b2 { background: rgba(37, 99, 235, .22); animation-delay: .05s, 0s; }
 @keyframes dropexpand { to { transform: scale(85); border-radius: 50%; } }
-.drop-panel { position: absolute; inset: 0; overflow: auto; display: flex; flex-direction: column; gap: 24px;
-  padding: min(9vh, 88px) max(24px, 7vw) 48px; color: #f5f4ef; opacity: 0; animation: dfade .45s .5s ease forwards; }
+.drop-panel { position: absolute; inset: 0; overflow: auto; display: flex; flex-direction: column; gap: 18px;
+  padding: 22px max(24px, 5vw) 34px; color: var(--ink); opacity: 0; animation: dfade .45s .5s ease forwards; }
 @keyframes dfade { to { opacity: 1; } }
-.drop-close { position: absolute; top: 20px; left: max(24px, 7vw); background: none; border: 1px solid rgba(255, 255, 255, .3);
-  color: rgba(245, 244, 239, .85); font: inherit; font-size: 13px; border-radius: 999px; padding: 9px 17px; cursor: pointer; }
-.drop-close:hover { border-color: #fff; color: #fff; }
-.drop-title { font-size: clamp(30px, 5vw, 52px); font-weight: 700; letter-spacing: -.035em; line-height: 1.1; }
+.drop-head { display: flex; align-items: center; margin-bottom: clamp(18px, 4vh, 44px); }
+.drop-brand { position: absolute; left: 50%; transform: translateX(-50%); font-weight: 700; font-size: 16px; color: var(--ink); }
+/* EVR 대형 메뉴 로우 */
+.drop-rows { display: flex; flex-direction: column; }
+.drop-row { display: flex; align-items: center; justify-content: space-between; gap: 18px; text-decoration: none;
+  color: var(--ink); font-size: clamp(38px, 6.5vw, 64px); font-weight: 600; letter-spacing: -.035em; line-height: 1.15;
+  padding: clamp(14px, 2.6vh, 26px) 0; border-bottom: 1px solid var(--line-2);
+  opacity: 0; transform: translateY(16px); animation: hvin .6s cubic-bezier(.16, 1, .3, 1) forwards; animation-delay: var(--dd, 400ms); }
+.drop-row:hover .drop-arr { transform: translateX(6px); }
+.drop-arr { font-size: clamp(22px, 3vw, 32px); color: var(--muted); transition: transform .25s cubic-bezier(.16, 1, .3, 1); }
+.drop-sub { font-size: 11.5px; font-weight: 700; letter-spacing: .1em; color: var(--muted); margin: 26px 0 2px; }
+.drop-foot { margin-top: auto; padding-top: 30px; display: flex; justify-content: space-between; gap: 12px;
+  font-size: 11px; letter-spacing: .08em; color: var(--muted); }
 .drop-groups { display: flex; flex-direction: column; gap: 20px; }
 .drop-group { display: flex; gap: 16px; align-items: baseline; flex-wrap: wrap; opacity: 0; transform: translateY(16px);
   animation: hvin .6s cubic-bezier(.16, 1, .3, 1) forwards; animation-delay: var(--dd, 500ms); }
-.drop-group-name { flex: 0 0 150px; font-weight: 700; font-size: 14px; color: color-mix(in srgb, var(--c) 55%, #fff); }
+.drop-group-name { flex: 0 0 150px; font-weight: 700; font-size: 14px; color: var(--c); }
 .drop-chips { display: flex; flex-wrap: wrap; gap: 8px; }
-.drop-chip { text-decoration: none; color: #f5f4ef; font-size: 14px; font-weight: 500; border: 1px solid rgba(255, 255, 255, .28);
-  border-radius: 999px; padding: 10px 18px; transition: background .15s, border-color .15s, color .15s; }
+.drop-chip { text-decoration: none; color: var(--ink); font-size: 14px; font-weight: 500; border: 1px solid color-mix(in srgb, var(--c) 36%, var(--line-2));
+  background: rgba(255, 255, 255, .7); border-radius: 999px; padding: 10px 18px; transition: background .15s, border-color .15s, color .15s; }
 .drop-chip:hover { background: var(--c); border-color: var(--c); color: #fff; }
-.drop-direct { color: rgba(245, 244, 239, .7); text-decoration: none; font-size: 14px; margin-top: 6px; border-bottom: 1px solid rgba(255, 255, 255, .25); align-self: flex-start; padding-bottom: 2px; }
-.drop-direct:hover { color: #fff; }
+.drop-direct { color: var(--muted); text-decoration: none; font-size: 14px; margin-top: 6px; border-bottom: 1px solid var(--line-2); align-self: flex-start; padding-bottom: 2px; }
+.drop-direct:hover { color: var(--ink); }
 .ld-h2 { font-size: clamp(28px, 4.5vw, 48px); font-weight: 700; letter-spacing: -.035em; line-height: 1.16; }
 
 /* S0 hero */

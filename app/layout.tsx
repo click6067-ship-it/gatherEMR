@@ -10,7 +10,7 @@ const mono = IBM_Plex_Mono({ subsets: ['latin'], weight: ['400', '500', '600'], 
 
 export const metadata: Metadata = {
   title: 'gatherEMR — 비식별 EMR 분과별 요약',
-  description: '의대 교수를 위한 비식별 EMR 차트 분과별 요약. 26개 전문과목, 문장마다 원문 근거.',
+  description: '의대 교수를 위한 비식별 EMR 차트 분과별 요약. 25개 전문과목, 문장마다 원문 근거.',
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
