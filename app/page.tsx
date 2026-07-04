@@ -46,6 +46,7 @@ export default function Landing() {
       {/* S2 — 해법 = 데모: 문장 → 원문 연결선 */}
       <section id="demo" className="ld-s2 ld-io">
         <h2 className="ld-h2 ink">분과를 고르면,<br />그 분과의 눈으로.</h2>
+        <div className="sheet ld-demo-sheet">
         <div className="ld-demo">
           <div className="ld-demo-pane">
             <div className="ld-demo-label">순환기내과 요약</div>
@@ -65,6 +66,7 @@ export default function Landing() {
           </div>
         </div>
         <p className="ld-sub">문장을 누르면 원문의 그 자리로 — 확인은 언제나 당신의 눈으로.</p>
+        </div>
       </section>
 
       {/* S3 — 26분과 */}
@@ -72,13 +74,16 @@ export default function Landing() {
         <h2 className="ld-h2 ink">26개 전문과목,<br />각자의 렌즈.</h2>
         <div className="ld-groups">
           {GROUPS.map((gr, gi) => (
-            <div key={gr.id} className="ld-group" style={{ ['--c' as string]: gr.color, ['--d' as string]: `${gi * 120}ms` } as React.CSSProperties}>
-              <span className="ld-group-name">{gr.label}</span>
-              <span className="ld-group-chips">
+            <div key={gr.id} className="ld-group-card" style={{ ['--c' as string]: gr.color, ['--bg' as string]: gr.soft, ['--d' as string]: `${gi * 110}ms` } as React.CSSProperties}>
+              <div className="ld-group-head">
+                <span className="ld-group-name">{gr.label}</span>
+                <span className="ld-group-count">{SPECIALTIES.filter((s) => s.group === gr.id).length}</span>
+              </div>
+              <div className="ld-group-chips">
                 {SPECIALTIES.filter((s) => s.group === gr.id).map((s, i) => (
-                  <Link key={s.id} href="/app" className="ld-chip" style={{ ['--d' as string]: `${gi * 120 + i * 40}ms` } as React.CSSProperties}>{s.name}</Link>
+                  <Link key={s.id} href="/app" className="ld-chip" style={{ ['--d' as string]: `${gi * 110 + i * 35}ms` } as React.CSSProperties}>{s.name}</Link>
                 ))}
-              </span>
+              </div>
             </div>
           ))}
         </div>
@@ -86,8 +91,10 @@ export default function Landing() {
 
       {/* S5 — CTA */}
       <section className="ld-s5 ld-io">
-        <h2 className="ld-h2 ink">지금 차트 하나<br />넣어보세요.</h2>
-        <Link href="/app" className="btn ld-cta">시작하기 →</Link>
+        <div className="sheet ld-cta-sheet">
+          <h2 className="ld-h2 ink">지금 차트 하나<br />넣어보세요.</h2>
+          <Link href="/app" className="btn ld-cta">시작하기 →</Link>
+        </div>
         <footer className="ld-foot">
           <span>교육·연구 참고용 — 진료 판단을 대체하지 않으며, 식별정보가 있는 차트는 업로드 전 확인 단계에서 가려집니다.</span>
           <span>© 2026 gatherEMR</span>
