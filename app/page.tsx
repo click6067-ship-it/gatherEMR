@@ -20,6 +20,16 @@ export default function Landing() {
 
   return (
     <main className="ld">
+      {/* floating liquid-glass nav */}
+      <nav className="gnav">
+        <span className="brand">gatherEMR</span>
+        <span className="links">
+          <a href="#demo">데모</a>
+          <a href="#specialties">26분과</a>
+        </span>
+        <Link href="/app" className="btn">차트 넣어보기</Link>
+      </nav>
+
       {/* S0 — hero: 무드 영상 (종이 위의 빛) + 카피 */}
       <section className="ld-hero">
         <video className="ld-video" autoPlay muted loop playsInline poster="/hero-poster.jpg" aria-hidden="true">
@@ -34,7 +44,7 @@ export default function Landing() {
       </section>
 
       {/* S2 — 해법 = 데모: 문장 → 원문 연결선 */}
-      <section className="ld-s2 ld-io">
+      <section id="demo" className="ld-s2 ld-io">
         <h2 className="ld-h2 ink">분과를 고르면,<br />그 분과의 눈으로.</h2>
         <div className="ld-demo">
           <div className="ld-demo-pane">
@@ -58,7 +68,7 @@ export default function Landing() {
       </section>
 
       {/* S3 — 26분과 */}
-      <section className="ld-s3 ld-io">
+      <section id="specialties" className="ld-s3 ld-io">
         <h2 className="ld-h2 ink">26개 전문과목,<br />각자의 렌즈.</h2>
         <div className="ld-groups">
           {GROUPS.map((gr, gi) => (
