@@ -16,7 +16,17 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="ko" className={`${sans.variable} ${mono.variable}`}>
-      <body>{children}</body>
+      <body>
+        {/* Liquid-glass refraction filter (Aave technique). Chromium reads it via
+            backdrop-filter:url(); Safari/Firefox fall back to plain blur+saturate. */}
+        <svg width="0" height="0" style={{ position: 'absolute' }} aria-hidden="true" colorInterpolationFilters="sRGB">
+          <filter id="lg-lens" x="0" y="0" width="100%" height="100%">
+            <feImage href="/glass-map.png" x="0" y="0" width="100%" height="100%" preserveAspectRatio="none" result="map" />
+            <feDisplacementMap in="SourceGraphic" in2="map" scale="26" xChannelSelector="R" yChannelSelector="G" />
+          </filter>
+        </svg>
+        {children}
+      </body>
     </html>
   );
 }

@@ -42,16 +42,41 @@ body::before {
     radial-gradient(640px 480px at 18% 88%, rgba(5, 125, 85, .055), transparent 70%),
     radial-gradient(700px 500px at 86% 82%, rgba(138, 90, 0, .045), transparent 70%);
 }
-/* liquid glass material */
+/* liquid glass material — 리서치 파라미터(라이트 배경): blur 10~15, 스펙큘러 절제(.5),
+   하단 다크 라인으로 유리 두께감. 텍스트 시트엔 굴절 없음(가독성). */
 .glass, .sheet, .top .wrap, .gnav, .picker .sec, .pane, .ld-group-card {
   background: var(--glass);
-  -webkit-backdrop-filter: blur(20px) saturate(1.8);
-  backdrop-filter: blur(20px) saturate(1.8);
+  -webkit-backdrop-filter: blur(14px) saturate(1.7);
+  backdrop-filter: blur(14px) saturate(1.7);
   border: 1px solid var(--glass-line);
-  box-shadow: inset 0 1px 0 var(--glass-edge), inset 0 -1px 0 rgba(23, 25, 28, .03), var(--glass-shadow);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .55),
+    inset 0 -1px 0 rgba(23, 25, 28, .06),
+    inset 1px 0 0 rgba(255, 255, 255, .25),
+    var(--glass-shadow);
+}
+/* 굴절(lensing) = 떠 있는 캡슐에만 (Aave: refraction on few floating elements).
+   Chromium이 url() 파트를 읽고, 미지원 브라우저는 아래 -webkit-/선행 선언으로 폴백. */
+.top .wrap, .gnav {
+  -webkit-backdrop-filter: blur(12px) saturate(1.7);
+  backdrop-filter: blur(12px) saturate(1.7);
+  backdrop-filter: url(#lg-lens) blur(12px) saturate(1.7);
+}
+/* sheen — 유리 표면 사광 (좌상단, 텍스트 간섭 없는 저강도) */
+.sheet, .gnav, .top .wrap, .ld-group-card { position: relative; }
+.sheet::after, .gnav::after, .top .wrap::after, .ld-group-card::after {
+  content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background: linear-gradient(133deg, rgba(255, 255, 255, .4), rgba(255, 255, 255, .06) 30%, transparent 55%);
+  mix-blend-mode: soft-light;
 }
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   .glass, .sheet, .top .wrap, .gnav, .picker .sec, .pane, .ld-group-card { background: rgba(255, 255, 255, .92); }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .glass, .sheet, .top .wrap, .gnav, .picker .sec, .pane, .ld-group-card {
+    background: rgba(255, 255, 255, .96);
+    -webkit-backdrop-filter: none; backdrop-filter: none;
+  }
 }
 button { font-family: inherit; cursor: pointer; }
 button:disabled { cursor: default; opacity: .45; }
