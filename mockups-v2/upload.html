@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="gatherEMR 업로드 — 분과 렌즈 선택 후 비식별 EMR 차트를 올립니다.">
+  <title>gatherEMR · 업로드 (ver2)</title>
+  <style>
+    /* ver2 · working tool = calm. The only ver2 cinema here: the thin night-band header
+       and the type/spacing system. Motion = hover/focus transitions only. */
+    :root {
+      color-scheme: light;
+      --font-body: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      --night: #0b1216;
+      --night-line: #1d2b31;
+      --night-text: #e9efee;
+      --night-muted: #93a5a9;
+      --paper: #f5f8f7;
+      --surface: #ffffff;
+      --surface-2: #ecf2f0;
+      --ink: #12191b;
+      --muted: #55676b;
+      --subtle: #7e8f92;
+      --line: #d9e2e0;
+      --line-strong: #aebebb;
+      --accent: #0a6f68;
+      --accent-ink: #ffffff;
+      --accent-soft: #e0f0ed;
+      --red: #b42318;
+      --radius: 2px;
+      --sp-1: 0.5rem;
+      --sp-2: 1rem;
+      --sp-3: 1.5rem;
+      --sp-4: 2.5rem;
+      --sp-5: 4rem;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; overflow-x: clip; }
+    body {
+      font-family: var(--font-body);
+      background: var(--paper);
+      color: var(--ink);
+      line-height: 1.55;
+      word-break: keep-all; /* Korean: break between words, not inside them */
+    }
+    a { color: inherit; }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .wrap { width: min(100% - 2rem, 78rem); margin-inline: auto; }
+    .eyebrow {
+      margin: 0;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    /* night band header — the ver2 thread */
+    .top { background: var(--night); color: var(--night-text); border-bottom: 1px solid var(--night-line); }
+    .top__inner {
+      min-height: 3.5rem;
+      display: flex; align-items: center; justify-content: space-between; gap: var(--sp-2);
+    }
+    .brand { display: flex; align-items: baseline; gap: 0.6rem; text-decoration: none; }
+    .brand b { font-weight: 800; }
+    .brand span { font-family: var(--font-mono); font-size: 0.72rem; color: var(--night-muted); white-space: nowrap; }
+    .crumb {
+      font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.06em;
+      color: var(--night-muted); white-space: nowrap;
+    }
+    .crumb b { color: var(--night-text); font-weight: 700; }
+
+    main { padding-block: var(--sp-4) var(--sp-5); }
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 0.95fr) minmax(22rem, 1.05fr);
+      gap: var(--sp-4);
+      align-items: start;
+    }
+
+    /* left: lens picker */
+    .intro { display: grid; gap: var(--sp-2); padding-bottom: var(--sp-3); border-bottom: 1px solid var(--line); margin-bottom: var(--sp-1); }
+    h1 {
+      margin: 0.4rem 0 0;
+      font-size: clamp(2rem, 4vw, 3.6rem);
+      line-height: 1.02; letter-spacing: -0.025em; font-weight: 800;
+    }
+    .intro p { margin: 0; color: var(--muted); max-width: 60ch; }
+    .group { display: grid; gap: var(--sp-1); padding-block: var(--sp-3); border-bottom: 1px solid var(--line); }
+    .group h2 {
+      margin: 0 0 0.25rem;
+      font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700;
+      letter-spacing: 0.14em; text-transform: uppercase; color: var(--subtle);
+    }
+    .specialties { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+    .spec {
+      display: inline-flex; align-items: center; gap: 0.45rem;
+      min-height: 2.25rem; padding: 0 0.75rem;
+      border: 1px solid var(--line); border-radius: var(--radius);
+      background: var(--surface); color: var(--muted);
+      font-size: 0.88rem; white-space: nowrap;
+    }
+    .spec--active {
+      border-color: var(--accent); background: var(--accent); color: var(--accent-ink);
+      font-weight: 800; font-size: 0.92rem;
+      box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+    .badge {
+      font-family: var(--font-mono); font-size: 0.64rem; line-height: 1; letter-spacing: 0.04em;
+      color: var(--subtle); background: var(--surface-2);
+      border-radius: var(--radius); padding: 0.22rem 0.35rem;
+    }
+
+    /* right: upload panel */
+    .panel {
+      border: 1px solid var(--line-strong); border-radius: 4px;
+      background: var(--surface); overflow: clip;
+    }
+    .panel__head {
+      display: flex; align-items: baseline; justify-content: space-between; gap: var(--sp-2);
+      padding: var(--sp-2) var(--sp-3);
+      border-bottom: 1px solid var(--line);
+      background: var(--surface-2);
+    }
+    .panel__head h2 { margin: 0; font-size: 0.95rem; font-weight: 800; }
+    .panel__head span { font-family: var(--font-mono); font-size: 0.72rem; color: var(--subtle); white-space: nowrap; }
+    .drop {
+      margin: var(--sp-3);
+      display: grid; place-items: center; text-align: center;
+      min-height: 18rem; padding: var(--sp-4) var(--sp-3);
+      border: 1.5px dashed var(--line-strong); border-radius: 4px;
+      background: var(--paper);
+      transition: border-color 0.2s ease, background-color 0.2s ease;
+    }
+    .drop:hover { border-color: var(--accent); background: var(--accent-soft); }
+    .drop__inner { display: grid; gap: var(--sp-2); max-width: 32rem; justify-items: center; }
+    .drop__mark {
+      width: 3rem; height: 3rem; display: grid; place-items: center;
+      border: 1px solid var(--accent); border-radius: var(--radius);
+      color: var(--accent); font-weight: 800; font-size: 1.5rem; line-height: 1;
+      background: var(--surface);
+    }
+    .drop h3 { margin: 0; font-size: clamp(1.25rem, 2vw, 1.7rem); line-height: 1.15; letter-spacing: -0.01em; }
+    .drop p { margin: 0; color: var(--muted); font-size: 0.92rem; }
+    .chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; margin-top: 0.25rem; }
+    .chip {
+      border: 1px solid var(--line-strong); border-radius: var(--radius);
+      background: var(--surface); color: var(--ink);
+      padding: 0.5rem 0.75rem; font-size: 0.86rem; font-weight: 700; white-space: nowrap;
+      cursor: pointer; font-family: inherit;
+      transition: border-color 0.15s ease, background-color 0.15s ease;
+    }
+    .chip:hover { border-color: var(--accent); background: var(--accent-soft); }
+    .chip[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); }
+
+    .formarea { display: grid; gap: var(--sp-2); padding: 0 var(--sp-3) var(--sp-3); }
+    details { border: 1px solid var(--line); border-radius: var(--radius); background: var(--paper); padding: 0.7rem var(--sp-2); }
+    summary { cursor: pointer; font-weight: 700; color: var(--accent); font-size: 0.92rem; }
+    .prompt {
+      width: 100%; min-height: 2.75rem; margin-top: 0.7rem;
+      border: 1px solid var(--line-strong); border-radius: var(--radius);
+      padding: 0 0.75rem; font: inherit; background: var(--surface); color: var(--ink);
+    }
+    .prompt:hover { border-color: var(--accent); }
+    .consent {
+      display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 0.7rem; align-items: start;
+      color: var(--muted); font-size: 0.9rem;
+    }
+    .consent input { width: 1.15rem; height: 1.15rem; margin-top: 0.16rem; accent-color: var(--accent); }
+    .primary {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-height: 3.2rem; width: 100%;
+      border: 1px solid var(--ink); border-radius: var(--radius);
+      background: var(--ink); color: var(--surface);
+      font: inherit; font-size: 1.02rem; font-weight: 800; line-height: 1; white-space: nowrap; cursor: pointer;
+      transition: background-color 0.2s ease, border-color 0.2s ease;
+    }
+    .primary:hover { background: var(--accent); border-color: var(--accent); }
+    .primary:active { transform: translateY(1px); }
+    .note {
+      border-top: 1px solid var(--line);
+      padding: var(--sp-2) var(--sp-3);
+      color: var(--muted); background: var(--surface-2); font-size: 0.86rem;
+    }
+
+    @media (max-width: 62rem) {
+      .layout { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 38rem) {
+      .wrap { width: min(100% - 1rem, 78rem); }
+      .crumb { display: none; }
+      main { padding-block: var(--sp-3) var(--sp-4); }
+      .drop { margin: var(--sp-2); min-height: 15rem; padding: var(--sp-3) var(--sp-2); }
+      .formarea { padding: 0 var(--sp-2) var(--sp-2); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="top">
+    <div class="wrap top__inner">
+      <a class="brand" href="landing.html"><b>gatherEMR</b><span>응급의학과 v2</span></a>
+      <span class="crumb"><b>01 렌즈 선택</b> → 02 비식별 차트 업로드 → 03 근거 연결 요약</span>
+    </div>
+  </header>
+
+  <main>
+    <div class="wrap layout">
+      <section aria-labelledby="pick-title">
+        <div class="intro">
+          <p class="eyebrow">Step 01 · Specialty lens</p>
+          <h1 id="pick-title">먼저 렌즈를 고릅니다.</h1>
+          <p>v1은 응급의학과가 정밀화되어 있습니다. 다른 분과도 선택은 가능하지만 현재는 “진행 중” 상태로 표시합니다.</p>
+        </div>
+
+        <div class="group">
+          <h2>내과·진료</h2>
+          <div class="specialties">
+            <span class="spec">내과 <span class="badge">정밀화 진행 중</span></span>
+            <span class="spec">심장내과 <span class="badge">진행 중</span></span>
+            <span class="spec">소화기내과 <span class="badge">진행 중</span></span>
+            <span class="spec">호흡기내과 <span class="badge">진행 중</span></span>
+            <span class="spec">신장내과 <span class="badge">진행 중</span></span>
+            <span class="spec">내분비대사내과 <span class="badge">진행 중</span></span>
+            <span class="spec">감염내과 <span class="badge">진행 중</span></span>
+            <span class="spec">혈액종양내과 <span class="badge">진행 중</span></span>
+            <span class="spec">신경과 <span class="badge">진행 중</span></span>
+            <span class="spec">소아청소년과 <span class="badge">진행 중</span></span>
+          </div>
+        </div>
+
+        <div class="group">
+          <h2>외과·수술</h2>
+          <div class="specialties">
+            <span class="spec">외과 <span class="badge">진행 중</span></span>
+            <span class="spec">정형외과 <span class="badge">진행 중</span></span>
+            <span class="spec">신경외과 <span class="badge">진행 중</span></span>
+            <span class="spec">흉부외과 <span class="badge">진행 중</span></span>
+            <span class="spec">산부인과 <span class="badge">진행 중</span></span>
+            <span class="spec">비뇨의학과 <span class="badge">진행 중</span></span>
+            <span class="spec">이비인후과 <span class="badge">진행 중</span></span>
+          </div>
+        </div>
+
+        <div class="group">
+          <h2>진단·지원</h2>
+          <div class="specialties">
+            <span class="spec">영상의학과 <span class="badge">진행 중</span></span>
+            <span class="spec">진단검사의학과 <span class="badge">진행 중</span></span>
+            <span class="spec">병리과 <span class="badge">진행 중</span></span>
+            <span class="spec">마취통증의학과 <span class="badge">진행 중</span></span>
+            <span class="spec">재활의학과 <span class="badge">진행 중</span></span>
+          </div>
+        </div>
+
+        <div class="group">
+          <h2>응급·사회의학</h2>
+          <div class="specialties">
+            <span class="spec spec--active">응급의학과</span>
+            <span class="spec">가정의학과 <span class="badge">진행 중</span></span>
+            <span class="spec">예방의학과 <span class="badge">진행 중</span></span>
+            <span class="spec">직업환경의학과 <span class="badge">진행 중</span></span>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" aria-labelledby="upload-title">
+        <div class="panel__head">
+          <h2 id="upload-title">Step 02 · 차트 업로드</h2>
+          <span>text / text-PDF</span>
+        </div>
+
+        <div class="drop">
+          <div class="drop__inner">
+            <div class="drop__mark" aria-hidden="true">+</div>
+            <h3>비식별 텍스트 또는 text-PDF를 놓으세요.</h3>
+            <p>주민번호, 등록번호, 이름, 연락처는 업로드 전에 제거되어야 합니다. 스캔 이미지 PDF는 OCR 고도화 범위입니다.</p>
+            <div class="chips" aria-label="응급의학과 집중 포인트 (탭으로 선택)">
+              <button class="chip" type="button" aria-pressed="true">🚨 놓치면 안 될 red flag</button>
+              <button class="chip" type="button" aria-pressed="false">⏱️ 시간순 경과·활력징후 추세</button>
+              <button class="chip" type="button" aria-pressed="false">💊 감별진단·처치 우선순위</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="formarea">
+          <details>
+            <summary>직접 입력</summary>
+            <input class="prompt" type="text" value="응급실 초진기록과 검사결과를 붙여넣고 red flag 중심으로 요약">
+          </details>
+
+          <label class="consent">
+            <input type="checkbox">
+            <span>이 케이스는 교육·연구용으로 비식별 처리되었고, 원문에 환자 식별자가 남아 있지 않음을 확인합니다.</span>
+          </label>
+
+          <button class="primary" type="button">응급의학과 요약 시작</button>
+        </div>
+        <div class="note">저장형 서비스 mockup이 아닙니다. 이 화면은 업로드 마찰을 줄이되, 비식별 확인을 명시적으로 남기는 방향을 보여줍니다.</div>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    // calm tool page: the only behavior is chip toggling (tap, no typing)
+    document.querySelectorAll(".chip").forEach(function (chip) {
+      chip.addEventListener("click", function () {
+        chip.setAttribute("aria-pressed", chip.getAttribute("aria-pressed") !== "true");
+      });
+    });
+  </script>
+</body>
+</html>

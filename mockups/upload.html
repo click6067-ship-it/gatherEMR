@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>gatherEMR · 업로드</title>
+  <style>
+    /* Hallmark · pre-emit critique: P5 H5 E4 S5 R5 V4 */
+    /* Hallmark · genre: modern-minimal · macrostructure: Workbench · theme: clinical-cobalt-custom · enrichment: none · nav: N9 · footer: Ft2 · contrast: pass (40-41) · mobile: pass (34,49,50-57) */
+    :root {
+      --font-body: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      --color-paper: #f7faf9;
+      --color-surface: #ffffff;
+      --color-surface-2: #eef5f3;
+      --color-ink: #162123;
+      --color-muted: #5f6f71;
+      --color-subtle: #879596;
+      --color-line: #d7e2df;
+      --color-line-strong: #aabbb8;
+      --color-accent: #0a6f68;
+      --color-accent-ink: #ffffff;
+      --color-accent-soft: #dff0ed;
+      --color-red: #b42318;
+      --color-red-soft: #fff0ed;
+      --space-2xs: 0.25rem;
+      --space-xs: 0.5rem;
+      --space-sm: 0.75rem;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2rem;
+      --space-2xl: 3rem;
+      --space-3xl: 4rem;
+      --radius-sm: 0.375rem;
+      --radius-md: 0.5rem;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; overflow-x: clip; }
+    body {
+      font-family: var(--font-body);
+      background: var(--color-paper);
+      color: var(--color-ink);
+      line-height: 1.55;
+    }
+    .wrap { width: min(100% - 2rem, 78rem); margin-inline: auto; }
+    .top {
+      border-bottom: 1px solid var(--color-line);
+      background: var(--color-paper);
+    }
+    .top__inner {
+      min-height: 4rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-md);
+    }
+    .brand { font-weight: 760; text-decoration: none; white-space: nowrap; }
+    .crumb { color: var(--color-muted); font-size: 0.88rem; white-space: nowrap; }
+    main { padding-block: var(--space-2xl) var(--space-3xl); }
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 0.95fr) minmax(22rem, 1.05fr);
+      gap: var(--space-xl);
+      align-items: start;
+    }
+    .intro {
+      display: grid;
+      gap: var(--space-md);
+      padding-bottom: var(--space-lg);
+      border-bottom: 1px solid var(--color-line);
+      margin-bottom: var(--space-lg);
+    }
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 4vw, 4.1rem);
+      line-height: 1.03;
+      letter-spacing: 0;
+      overflow-wrap: anywhere;
+      min-width: 0;
+    }
+    .intro p { margin: 0; color: var(--color-muted); max-width: 62ch; }
+    .group {
+      display: grid;
+      gap: var(--space-sm);
+      padding-block: var(--space-lg);
+      border-bottom: 1px solid var(--color-line);
+    }
+    .group h2 {
+      margin: 0;
+      font-size: 0.92rem;
+      color: var(--color-muted);
+      font-weight: 780;
+    }
+    .specialties {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-xs);
+    }
+    .spec {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+      min-height: 2.25rem;
+      padding: 0 var(--space-sm);
+      border: 1px solid var(--color-line);
+      border-radius: var(--radius-sm);
+      background: var(--color-surface);
+      color: var(--color-ink);
+      font-size: 0.9rem;
+      white-space: nowrap;
+    }
+    .spec--active {
+      border-color: var(--color-accent);
+      background: var(--color-accent);
+      color: var(--color-accent-ink);
+      font-weight: 780;
+    }
+    .badge {
+      color: var(--color-muted);
+      background: var(--color-surface-2);
+      border-radius: var(--radius-sm);
+      padding: var(--space-2xs) var(--space-xs);
+      font-size: 0.72rem;
+      line-height: 1;
+    }
+    .panel {
+      border: 1px solid var(--color-line-strong);
+      border-radius: var(--radius-md);
+      background: var(--color-surface);
+      overflow: clip;
+    }
+    .drop {
+      display: grid;
+      place-items: center;
+      min-height: 20rem;
+      padding: var(--space-xl);
+      border-bottom: 1px solid var(--color-line);
+      text-align: center;
+      background: var(--color-surface);
+    }
+    .drop__inner { display: grid; gap: var(--space-md); max-width: 34rem; }
+    .drop__mark {
+      width: 3.25rem;
+      height: 3.25rem;
+      display: grid;
+      place-items: center;
+      justify-self: center;
+      border: 1px solid var(--color-line-strong);
+      border-radius: var(--radius-md);
+      color: var(--color-accent);
+      font-weight: 900;
+      font-size: 1.4rem;
+      background: var(--color-accent-soft);
+    }
+    .drop h2 {
+      margin: 0;
+      font-size: clamp(1.35rem, 2vw, 2rem);
+      line-height: 1.1;
+      letter-spacing: 0;
+    }
+    .drop p { margin: 0; color: var(--color-muted); }
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: var(--space-xs);
+      margin-top: var(--space-xs);
+    }
+    .chip {
+      border: 1px solid var(--color-line-strong);
+      border-radius: var(--radius-sm);
+      background: var(--color-paper);
+      padding: var(--space-xs) var(--space-sm);
+      font-weight: 720;
+      font-size: 0.88rem;
+      white-space: nowrap;
+    }
+    .formarea {
+      display: grid;
+      gap: var(--space-md);
+      padding: var(--space-lg);
+    }
+    details {
+      border: 1px solid var(--color-line);
+      border-radius: var(--radius-sm);
+      background: var(--color-paper);
+      padding: var(--space-sm) var(--space-md);
+    }
+    summary {
+      cursor: pointer;
+      font-weight: 760;
+      color: var(--color-accent);
+      outline: 2px solid transparent;
+    }
+    summary:focus-visible { outline-color: var(--color-accent); outline-offset: 2px; }
+    .prompt {
+      width: 100%;
+      min-height: 2.75rem;
+      margin-top: var(--space-sm);
+      border: 1px solid var(--color-line-strong);
+      border-radius: var(--radius-sm);
+      padding: 0 var(--space-sm);
+      font: inherit;
+      background: var(--color-surface);
+      color: var(--color-ink);
+      outline: 2px solid transparent;
+    }
+    .prompt:hover { border-color: var(--color-accent); }
+    .prompt:focus { outline-color: var(--color-accent); outline-offset: 1px; }
+    .consent {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: var(--space-sm);
+      align-items: start;
+      color: var(--color-muted);
+      font-size: 0.92rem;
+    }
+    .consent input {
+      width: 1.15rem;
+      height: 1.15rem;
+      margin-top: 0.18rem;
+      accent-color: var(--color-accent);
+    }
+    .primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 3.1rem;
+      width: 100%;
+      border: 1px solid var(--color-ink);
+      border-radius: var(--radius-sm);
+      background: var(--color-ink);
+      color: var(--color-surface);
+      font: inherit;
+      font-weight: 820;
+      line-height: 1;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+    .primary:hover { background: var(--color-accent); border-color: var(--color-accent); }
+    .primary:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+    .primary:active { transform: translateY(1px); }
+    .primary:disabled { opacity: 0.55; cursor: not-allowed; }
+    .note {
+      border-top: 1px solid var(--color-line);
+      padding: var(--space-md) var(--space-lg);
+      color: var(--color-muted);
+      background: var(--color-surface-2);
+      font-size: 0.88rem;
+    }
+    @media (max-width: 62rem) {
+      .layout { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 38rem) {
+      .wrap { width: min(100% - 1rem, 78rem); }
+      .crumb { display: none; }
+      main { padding-block: var(--space-xl) var(--space-2xl); }
+      .drop, .formarea { padding: var(--space-md); }
+      .drop { min-height: 17rem; }
+    }
+  </style>
+</head>
+<body>
+  <header class="top">
+    <div class="wrap top__inner">
+      <a class="brand" href="landing.html">gatherEMR</a>
+      <div class="crumb">분과 선택 → 비식별 차트 업로드 → 근거 연결 요약</div>
+    </div>
+  </header>
+
+  <main>
+    <div class="wrap layout">
+      <section aria-labelledby="pick-title">
+        <div class="intro">
+          <h1 id="pick-title">먼저 렌즈를 고릅니다.</h1>
+          <p>v1은 응급의학과가 정밀화되어 있습니다. 다른 분과도 선택은 가능하지만 현재는 “진행 중” 상태로 표시합니다.</p>
+        </div>
+
+        <div class="group">
+          <h2>내과·진료</h2>
+          <div class="specialties">
+            <span class="spec">내과 <span class="badge">정밀화 진행 중</span></span>
+            <span class="spec">심장내과 <span class="badge">진행 중</span></span>
+            <span class="spec">소화기내과 <span class="badge">진행 중</span></span>
+            <span class="spec">호흡기내과 <span class="badge">진행 중</span></span>
+            <span class="spec">신장내과 <span class="badge">진행 중</span></span>
+            <span class="spec">내분비대사내과 <span class="badge">진행 중</span></span>
+            <span class="spec">감염내과 <span class="badge">진행 중</span></span>
+            <span class="spec">혈액종양내과 <span class="badge">진행 중</span></span>
+            <span class="spec">신경과 <span class="badge">진행 중</span></span>
+            <span class="spec">소아청소년과 <span class="badge">진행 중</span></span>
+          </div>
+        </div>
+
+        <div class="group">
+          <h2>외과·수술</h2>
+          <div class="specialties">
+            <span class="spec">외과 <span class="badge">진행 중</span></span>
+            <span class="spec">정형외과 <span class="badge">진행 중</span></span>
+            <span class="spec">신경외과 <span class="badge">진행 중</span></span>
+            <span class="spec">흉부외과 <span class="badge">진행 중</span></span>
+            <span class="spec">산부인과 <span class="badge">진행 중</span></span>
+            <span class="spec">비뇨의학과 <span class="badge">진행 중</span></span>
+            <span class="spec">이비인후과 <span class="badge">진행 중</span></span>
+          </div>
+        </div>
+
+        <div class="group">
+          <h2>진단·지원</h2>
+          <div class="specialties">
+            <span class="spec">영상의학과 <span class="badge">진행 중</span></span>
+            <span class="spec">진단검사의학과 <span class="badge">진행 중</span></span>
+            <span class="spec">병리과 <span class="badge">진행 중</span></span>
+            <span class="spec">마취통증의학과 <span class="badge">진행 중</span></span>
+            <span class="spec">재활의학과 <span class="badge">진행 중</span></span>
+          </div>
+        </div>
+
+        <div class="group">
+          <h2>응급·사회의학</h2>
+          <div class="specialties">
+            <span class="spec spec--active">응급의학과</span>
+            <span class="spec">가정의학과 <span class="badge">진행 중</span></span>
+            <span class="spec">예방의학과 <span class="badge">진행 중</span></span>
+            <span class="spec">직업환경의학과 <span class="badge">진행 중</span></span>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" aria-labelledby="upload-title">
+        <div class="drop">
+          <div class="drop__inner">
+            <div class="drop__mark" aria-hidden="true">+</div>
+            <h2 id="upload-title">비식별 텍스트 또는 text-PDF를 놓으세요.</h2>
+            <p>주민번호, 등록번호, 이름, 연락처는 업로드 전에 제거되어야 합니다. 스캔 이미지 PDF는 OCR 고도화 범위입니다.</p>
+            <div class="chips" aria-label="응급의학과 집중 포인트">
+              <span class="chip">🚨 놓치면 안 될 red flag</span>
+              <span class="chip">⏱️ 시간순 경과·활력징후 추세</span>
+              <span class="chip">💊 감별진단·처치 우선순위</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="formarea">
+          <details>
+            <summary>직접 입력</summary>
+            <input class="prompt" type="text" value="응급실 초진기록과 검사결과를 붙여넣고 red flag 중심으로 요약">
+          </details>
+
+          <label class="consent">
+            <input type="checkbox">
+            <span>이 케이스는 교육·연구용으로 비식별 처리되었고, 원문에 환자 식별자가 남아 있지 않음을 확인합니다.</span>
+          </label>
+
+          <button class="primary" type="button">응급의학과 요약 시작</button>
+        </div>
+        <div class="note">저장형 서비스 mockup이 아닙니다. 이 화면은 업로드 마찰을 줄이되, 비식별 확인을 명시적으로 남기는 방향을 보여줍니다.</div>
+      </section>
+    </div>
+  </main>
+</body>
+</html>

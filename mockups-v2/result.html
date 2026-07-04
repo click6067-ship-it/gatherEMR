@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="gatherEMR 결과 — 응급의학과 urgency-first 요약과 원문 근거 연결 split view.">
+  <title>gatherEMR · 흉통 결과 (ver2)</title>
+  <style>
+    /* ver2 · working tool = calm. Numbered blocks encode the EM priority order (order = the product's
+       thesis). Evidence tags = shape + color (●원문 ◐추론 ○불확실). Chart pane is sticky for verification.
+       Motion = hover/focus transitions only. */
+    :root {
+      color-scheme: light;
+      --font-body: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      --night: #0b1216;
+      --night-line: #1d2b31;
+      --night-text: #e9efee;
+      --night-muted: #93a5a9;
+      --paper: #f5f8f7;
+      --surface: #ffffff;
+      --surface-2: #ecf2f0;
+      --ink: #12191b;
+      --muted: #55676b;
+      --subtle: #7e8f92;
+      --line: #d9e2e0;
+      --line-strong: #aebebb;
+      --accent: #0a6f68;
+      --accent-soft: #e0f0ed;
+      --red: #b42318;
+      --red-soft: #fbefec;
+      --radius: 2px;
+      --banner: 3.5rem;
+      --sp-1: 0.5rem;
+      --sp-2: 1rem;
+      --sp-3: 1.5rem;
+      --sp-4: 2.5rem;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; overflow-x: clip; }
+    body { font-family: var(--font-body); background: var(--paper); color: var(--ink); line-height: 1.5; word-break: keep-all; }
+    a { color: inherit; }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+    /* night band header */
+    .top {
+      position: sticky; top: 0; z-index: 20;
+      min-height: var(--banner); display: flex; align-items: center;
+      background: var(--night); color: var(--night-text);
+      border-bottom: 1px solid var(--night-line);
+    }
+    .top__inner {
+      width: min(100% - 1.5rem, 96rem); margin-inline: auto;
+      display: flex; align-items: center; justify-content: space-between; gap: var(--sp-2);
+    }
+    .brand { display: flex; align-items: baseline; gap: 0.6rem; min-width: 0; text-decoration: none; }
+    .brand b { font-weight: 800; white-space: nowrap; }
+    .brand span { font-family: var(--font-mono); font-size: 0.72rem; color: var(--night-muted); white-space: nowrap; }
+    .tools { display: flex; align-items: center; gap: 0.4rem; }
+    .tool {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-height: 2.2rem; padding: 0 0.75rem;
+      border: 1px solid var(--night-line); border-radius: var(--radius);
+      background: transparent; color: var(--night-text);
+      font: inherit; font-size: 0.84rem; font-weight: 700; line-height: 1; white-space: nowrap; cursor: pointer;
+      transition: border-color 0.15s ease, color 0.15s ease;
+    }
+    .tool:hover { border-color: #43c9b7; color: #43c9b7; }
+    .tool:active { transform: translateY(1px); }
+
+    /* split view */
+    .workspace {
+      width: min(100% - 1.5rem, 96rem); margin-inline: auto;
+      padding-block: var(--sp-3);
+      display: grid; grid-template-columns: minmax(0, 0.98fr) minmax(22rem, 1.02fr);
+      gap: var(--sp-3); align-items: start;
+    }
+    .pane {
+      border: 1px solid var(--line); border-radius: 4px;
+      background: var(--surface); min-width: 0; overflow: clip;
+    }
+    .pane--chart {
+      position: sticky; top: calc(var(--banner) + var(--sp-2));
+      max-height: calc(100vh - var(--banner) - 2 * var(--sp-2));
+      display: flex; flex-direction: column;
+    }
+    .pane__head {
+      display: flex; align-items: center; justify-content: space-between; gap: var(--sp-2);
+      padding: var(--sp-2) var(--sp-3);
+      border-bottom: 1px solid var(--line); background: var(--surface-2);
+      flex: none;
+    }
+    .pane__head h1, .pane__head h2 {
+      margin: 0; font-size: 0.95rem; font-weight: 800; line-height: 1.1; letter-spacing: 0.01em;
+      min-width: 0; overflow-wrap: anywhere;
+    }
+    .status {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      font-family: var(--font-mono); color: var(--red); font-size: 0.76rem; font-weight: 700;
+      letter-spacing: 0.02em; white-space: nowrap;
+    }
+    .status--calm { color: var(--subtle); }
+
+    /* left: summary blocks in fixed EM order */
+    .summary { display: grid; gap: var(--sp-2); padding: var(--sp-3); }
+    .block { display: grid; gap: 0.45rem; padding-bottom: var(--sp-2); border-bottom: 1px solid var(--line); }
+    .block:last-child { border-bottom: 0; padding-bottom: 0; }
+    .block h3 {
+      margin: 0; display: flex; align-items: baseline; gap: 0.55rem;
+      font-family: var(--font-mono); color: var(--muted);
+      font-size: 0.74rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+    }
+    .block h3 i { font-style: normal; color: var(--line-strong); font-weight: 700; }
+    .line {
+      display: grid; grid-template-columns: 4.6rem minmax(0, 1fr); gap: 0.6rem; align-items: start;
+      padding: 0.4rem 0.5rem; border-radius: var(--radius);
+    }
+    .line--selected { background: var(--accent-soft); outline: 1px solid var(--accent); outline-offset: -1px; }
+    .tag {
+      display: inline-flex; align-items: center; gap: 0.35rem;
+      margin-top: 0.15rem;
+      font-family: var(--font-mono); font-size: 0.68rem; font-weight: 700; letter-spacing: 0.02em;
+      white-space: nowrap;
+    }
+    .dot { flex: none; width: 0.56em; height: 0.56em; border-radius: 50%; border: 1.5px solid currentColor; }
+    .tag--explicit { color: var(--accent); }
+    .tag--explicit .dot { background: currentColor; }
+    .tag--derived { color: var(--muted); }
+    .tag--derived .dot { background: linear-gradient(90deg, currentColor 50%, transparent 50%); }
+    .tag--uncertain { color: var(--red); }
+    .line p { margin: 0; min-width: 0; font-size: 0.94rem; }
+    .big { font-size: clamp(1.25rem, 1.8vw, 1.7rem); font-weight: 800; line-height: 1.2; letter-spacing: -0.01em; }
+    .red { color: var(--red); font-weight: 800; }
+    .muted { color: var(--muted); }
+    .spark { vertical-align: -0.35em; margin-left: 0.3rem; }
+    .spark .axis { stroke: var(--line-strong); stroke-width: 1; }
+    .spark .rise-line { stroke: var(--red); stroke-width: 1.5; fill: none; }
+    .spark .pt { fill: var(--red); }
+    .spark .pending-line { stroke: var(--subtle); stroke-width: 1.2; stroke-dasharray: 3 3; fill: none; }
+    .spark .pending-pt { fill: var(--surface); stroke: var(--subtle); stroke-dasharray: 2 2; }
+    .columns { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.5rem; }
+    .ddx { border: 1px solid var(--line); border-radius: var(--radius); padding: 0.75rem; min-width: 0; background: var(--paper); }
+    .ddx b { display: block; margin-bottom: 0.4rem; font-size: 0.84rem; }
+    .ddx--miss b { color: var(--red); }
+    .ddx ul { margin: 0; padding-inline-start: 1.05rem; color: var(--muted); font-size: 0.88rem; }
+    .ddx li + li { margin-top: 0.2rem; }
+
+    /* right: de-identified chart */
+    .chart {
+      padding: var(--sp-3);
+      font-family: var(--font-mono); font-size: 0.84rem; line-height: 1.7; color: var(--ink);
+      overflow-y: auto; min-height: 0;
+    }
+    .chart__section { padding-block: 0.7rem; border-bottom: 1px solid var(--line); white-space: pre-wrap; }
+    .chart__section:first-child { padding-top: 0; }
+    .chart__section b { font-weight: 700; color: var(--muted); }
+    .mask { color: var(--subtle); letter-spacing: 0.04em; }
+    mark {
+      background: var(--accent-soft); color: var(--ink);
+      outline: 1px solid var(--accent); outline-offset: 1px;
+      border-radius: var(--radius); padding: 0 0.2rem;
+    }
+
+    /* evidence card: inline, tethered to the marked span above it */
+    .evidence {
+      margin: 0.75rem 0 0.25rem; position: relative;
+      border: 1px solid var(--accent); border-radius: 4px;
+      background: var(--surface);
+      padding: var(--sp-2) var(--sp-2);
+      font-family: var(--font-body); font-size: 0.86rem; line-height: 1.5;
+      white-space: normal;
+    }
+    .evidence::before {
+      content: ""; position: absolute; left: 1.4rem; top: -0.85rem;
+      width: 1px; height: 0.85rem; background: var(--accent);
+    }
+    .evidence h3 {
+      margin: 0 0 0.6rem; display: flex; align-items: baseline; gap: 0.5rem;
+      font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent);
+    }
+    .evidence dl { margin: 0; display: grid; gap: 0.55rem; }
+    .evidence dt { color: var(--muted); font-weight: 700; font-size: 0.78rem; }
+    .evidence dd { margin: 0.1rem 0 0; }
+    .evidence code {
+      font-family: var(--font-mono); font-size: 0.8rem;
+      background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius);
+      padding: 0.1rem 0.35rem; white-space: normal;
+    }
+
+    @media (max-width: 74rem) {
+      .workspace { grid-template-columns: 1fr; }
+      .pane--chart { position: static; max-height: none; display: block; }
+      .chart { overflow: visible; }
+    }
+    @media (max-width: 48rem) {
+      .workspace, .top__inner { width: min(100% - 1rem, 96rem); }
+      .top { position: static; }
+      .top__inner { align-items: flex-start; flex-direction: column; padding-block: 0.6rem; }
+      .tools { width: 100%; overflow-x: auto; padding-bottom: 0.2rem; }
+      .summary, .chart { padding: var(--sp-2); }
+      .pane__head { padding: var(--sp-2); align-items: flex-start; flex-direction: column; gap: 0.3rem; }
+      .columns { grid-template-columns: 1fr; }
+      .line { grid-template-columns: 1fr; gap: 0.15rem; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="top">
+    <div class="top__inner">
+      <a class="brand" href="landing.html"><b>gatherEMR</b><span>응급의학과 요약 · 지저분한 흉통</span></a>
+      <div class="tools" aria-label="결과 도구">
+        <button class="tool" type="button">근거만 보기</button>
+        <button class="tool" type="button">불확실 항목</button>
+        <button class="tool" type="button">원문 위치</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="workspace">
+    <!-- LEFT · urgency-first summary, fixed EM order 01–12 -->
+    <section class="pane" aria-labelledby="summary-title">
+      <div class="pane__head">
+        <h1 id="summary-title">Emergency Medicine summary</h1>
+        <span class="status">🚨 Sick until proven otherwise</span>
+      </div>
+
+      <div class="summary">
+        <section class="block">
+          <h3><i>01</i>Acuity</h3>
+          <div class="line"><span class="tag tag--derived"><span class="dot" aria-hidden="true"></span>추론</span><p class="big red">Sick: NSTEMI / high-risk ACS 가능성이 높고, dissection·PE는 원문상 미배제.</p></div>
+        </section>
+
+        <section class="block">
+          <h3><i>02</i>한 줄 문제표상</h3>
+          <div class="line"><span class="tag tag--derived"><span class="dot" aria-hidden="true"></span>추론</span><p>67세 남성, 운동 후 시작된 흉부불편감과 SOB, 동적 Troponin 상승 및 비특이 ST-T 변화가 있는 고위험 흉통.</p></div>
+        </section>
+
+        <section class="block">
+          <h3><i>03</i>Risk modifiers</h3>
+          <div class="line"><span class="tag tag--explicit"><span class="dot" aria-hidden="true"></span>원문</span><p>DM, HTN, CKD stage 3 기록. 흡연 30 PY, 2년 전 중단.</p></div>
+          <div class="line"><span class="tag tag--uncertain"><span class="dot" aria-hidden="true"></span>불확실</span><p>항응고제: warfarin 복용처럼 보이나 medication reconciliation에는 “not taking”이라고 상충.</p></div>
+          <div class="line"><span class="tag tag--uncertain"><span class="dot" aria-hidden="true"></span>불확실</span><p>알레르기, code status, 최근 시술·수술력은 원문에서 명확히 확인되지 않음. 임신가능성은 해당 없음으로 추정되나 성별 외 명시 없음.</p></div>
+        </section>
+
+        <section class="block">
+          <h3><i>04</i>🚨 즉각 위협 &amp; 지금 할 일</h3>
+          <div class="line"><span class="tag tag--derived"><span class="dot" aria-hidden="true"></span>추론</span><p><span class="red">ACS/NSTEMI:</span> serial EKG, Troponin trend, aspirin 여부 확인, cardiology consult 및 heparin 적응증은 항응고제 상충 기록 확인 후 결정.</p></div>
+          <div class="line"><span class="tag tag--derived"><span class="dot" aria-hidden="true"></span>추론</span><p><span class="red">Dissection/PE 미배제:</span> 찢어지는 통증, pulse deficit, neuro deficit, D-dimer/CTA 기준이 원문상 충분히 정리되지 않음.</p></div>
+          <div class="line"><span class="tag tag--explicit"><span class="dot" aria-hidden="true"></span>원문</span><p>SpO2 91% RA 기록 후 O2 2 L nasal cannula 적용, 이후 95%.</p></div>
+        </section>
+
+        <section class="block">
+          <h3><i>05</i>Pending / action list</h3>
+          <div class="line"><span class="tag tag--explicit"><span class="dot" aria-hidden="true"></span>원문</span><p>Repeat Troponin ordered 21:10, result pending at sign-out note.</p></div>
+          <div class="line"><span class="tag tag--derived"><span class="dot" aria-hidden="true"></span>추론</span><p>Medication reconciliation 재확인: warfarin 실제 복용 여부, INR와 항혈소판·항응고 전략 연결 필요.</p></div>
+          <div class="line"><span class="tag tag--uncertain"><span class="dot" aria-hidden="true"></span>불확실</span><p>Chest pain onset time이 간호기록과 의사기록에서 30-60분 차이. door-to-EKG 기준 산정 불확실.</p></div>
+        </section>
+
+        <section class="block">
+          <h3><i>06</i>주호소·발현(HPI)</h3>
+          <div class="line"><span class="tag tag--explicit"><span class="dot" aria-hidden="true"></span>원문</span><p>“가슴 답답함”, “식은땀”, SOB 동반. 운동 후 시작, 휴식 후 일부 완화. 방사통은 왼쪽 어깨로 언급됨.</p></div>
+          <div class="line"><span class="tag tag--uncertain"><span class="dot" aria-hidden="true"></span>불확실</span><p>Pain score는 triage 7/10, physician note 3/10으로 상충.</p></div>
+        </section>
+
+        <section class="block">
+          <h3><i>07</i>활력징후 + 추세</h3>
+          <div class="line"><span class="tag tag--explicit"><span class="dot" aria-hidden="true"></span>원문</span><p>18:42 BP 168/94 HR 104 RR 22 SpO2 91% RA T 36.8 → 19:30 BP 142/86 HR 96 SpO2 95% on O2 2 L.</p></div>
+          <div class="line"><span class="tag tag--derived"><span class="dot" aria-hidden="true"></span>추론</span><p>초기 저산소와 빈맥은 ACS 외 PE/폐부종 가능성도 함께 올림. 혈압은 안정화되었으나 위험도 낮추는 근거는 아님.</p></div>
+        </section>
+
+        <section class="block">
+          <h3><i>08</i>핵심 검사·영상</h3>
+          <div class="line line--selected"><span class="tag tag--explicit"><span class="dot" aria-hidden="true"></span>원문</span><p><span class="red">Troponin 0.8 → 2.1 ↑</span><svg class="spark" width="72" height="22" viewBox="0 0 72 22" aria-label="Troponin 추세: 0.8에서 2.1로 상승, 다음 값 대기 중"><line class="axis" x1="2" y1="19" x2="70" y2="19"/><path class="rise-line" d="M8,15 L38,5"/><circle class="pt" cx="8" cy="15" r="2.4"/><circle class="pt" cx="38" cy="5" r="2.4"/><path class="pending-line" d="M38,5 L62,5"/><circle class="pending-pt" cx="62" cy="5" r="2.4"/></svg> 동적 상승. Cr 1.8, INR 1.7, Hb 10.2.</p></div>
+          <div class="line"><span class="tag tag--explicit"><span class="dot" aria-hidden="true"></span>원문</span><p>EKG: sinus tachycardia, nonspecific ST-T change, no STEMI criteria. CXR: mild pulmonary congestion?</p></div>
+        </section>
+
+        <section class="block">
+          <h3><i>09</i>감별 DDx</h3>
+          <div class="columns">
+            <div class="ddx"><b>Working Dx</b><ul><li>NSTEMI / high-risk ACS</li><li>Unstable angina evolving MI</li></ul></div>
+            <div class="ddx ddx--miss"><b>Cannot-miss 미배제</b><ul><li>Aortic dissection</li><li>PE</li><li>GI bleed with demand ischemia</li></ul></div>
+            <div class="ddx"><b>원문상 배제</b><ul><li>Pneumothorax: CXR 언급 없음</li><li>STEMI: EKG 기준 미충족</li></ul></div>
+          </div>
+        </section>
+
+        <section class="block">
+          <h3><i>10</i>처치·반응</h3>
+          <div class="line"><span class="tag tag--explicit"><span class="dot" aria-hidden="true"></span>원문</span><p>Aspirin 300 mg chewed. Nitroglycerin SL 후 통증 7/10 → 3/10. O2 2 L 적용 후 SpO2 95%.</p></div>
+          <div class="line"><span class="tag tag--uncertain"><span class="dot" aria-hidden="true"></span>불확실</span><p>Heparin 투여 여부는 order와 administration record가 맞지 않음.</p></div>
+        </section>
+
+        <section class="block">
+          <h3><i>11</i>처분·다음단계</h3>
+          <div class="line"><span class="tag tag--derived"><span class="dot" aria-hidden="true"></span>추론</span><p>CCU/심장내과 입원 또는 전원 수준. 응급실 sign-out에는 “cardiology callback pending”으로 남음.</p></div>
+        </section>
+
+        <section class="block">
+          <h3><i>12</i>⚠️ 불확실·누락</h3>
+          <div class="line"><span class="tag tag--uncertain"><span class="dot" aria-hidden="true"></span>불확실</span><p>복용약 상충, allergy 미기재, code status 미기재, pain onset 시각 상충, heparin 실제 투여 여부 불명확.</p></div>
+        </section>
+      </div>
+    </section>
+
+    <!-- RIGHT · de-identified original chart (sticky for verification) -->
+    <section class="pane pane--chart" aria-labelledby="chart-title">
+      <div class="pane__head">
+        <h2 id="chart-title">De-identified original chart</h2>
+        <span class="status status--calm">선택된 주장 ↔ 원문 span</span>
+      </div>
+      <div class="chart">
+        <div class="chart__section"><b>[Triage 2026-06-18 18:42]</b>
+Name: <span class="mask">███</span>  MRN: <span class="mask">████████</span>  Age/Sex: 67/M
+CC: chest discomfort, SOB
+Vitals: BP 168/94, HR 104, RR 22, T 36.8, SpO2 91% room air
+Pain score: 7/10, sweating (+), left shoulder radiation (+)</div>
+
+        <div class="chart__section"><b>[Nursing note 18:51]</b>
+운동 후 "가슴이 꽉 막힌 느낌" 발생. 정확한 onset: pt says "about 1 hr ago".
+O2 2 L NC applied. SpO2 improved to 95%.
+Home meds: "warfarin? 당뇨약, 혈압약" patient unsure.</div>
+
+        <div class="chart__section"><b>[ED physician note 19:08]</b>
+HPI: M/67 DM/HTN/CKD3. Chest tightness after walking uphill, diaphoresis, SOB.
+Pain now 3/10 after rest. Denies tearing back pain. No focal neurologic deficit noted.
+Medication reconciliation imported from last visit: aspirin, atorvastatin, metformin, losartan. Warfarin - not taking? (old problem list AF?) Allergy: not documented.</div>
+
+        <div class="chart__section"><b>[EKG 19:10]</b>
+Sinus tachycardia 102/min. Nonspecific ST-T abnormality. No ST elevation meeting STEMI criteria.
+QTc 458 ms.</div>
+
+        <div class="chart__section"><b>[Labs]</b>
+Cardiac marker:
+<mark>19:22 Troponin-I 0.8 ng/mL (ref &lt;0.04)
+20:46 Troponin-I 2.1 ng/mL ↑</mark>
+Other labs 19:24: Hb 10.2 g/dL, WBC 11.8, Plt 188k, Cr 1.8 mg/dL, eGFR 38, K 5.1, INR 1.7
+Repeat Troponin ordered 21:10 - pending at sign-out.
+<aside class="evidence" aria-label="선택된 근거">
+            <h3>선택된 근거 · claim ↔ span</h3>
+            <dl>
+              <div>
+                <dt>주장</dt>
+                <dd>Troponin 0.8 → 2.1로 동적 상승.</dd>
+              </div>
+              <div>
+                <dt>원문 인용</dt>
+                <dd><code>19:22 Troponin-I 0.8 ... 20:46 Troponin-I 2.1 ↑</code></dd>
+              </div>
+              <div>
+                <dt>모델 변형</dt>
+                <dd>두 시각의 같은 검사명을 연결해 상승 추세로 요약.</dd>
+              </div>
+              <div>
+                <dt>확신도(사유)</dt>
+                <dd>높음. 동일 단위·동일 검사명이며 두 값 모두 원문 검사 섹션에 직접 존재.</dd>
+              </div>
+            </dl>
+          </aside></div>
+
+        <div class="chart__section"><b>[Treatment]</b>
+19:18 Aspirin 300 mg chewed.
+19:21 Nitroglycerin SL x1. Chest discomfort 7/10 → 3/10 per nurse.
+Heparin order appears in CPOE 20:55; administration record not signed.
+Cardiology consult requested 20:58, callback pending.</div>
+
+        <div class="chart__section"><b>[Imaging]</b>
+CXR portable: mild pulmonary congestion? no pneumothorax mentioned.
+CTA chest not ordered in available note.</div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
