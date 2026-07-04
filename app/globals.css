@@ -465,3 +465,7 @@ details.oneline input { width: 100%; padding: 10px 12px; border: 1px solid var(-
   padding: 96px max(20px, 4vw) max(24px, 4vh); transition: opacity .4s ease, transform .4s cubic-bezier(.16,1,.3,1); }
 .scrub-payoff .ld-dash { width: 100%; }
 @media (prefers-reduced-motion: reduce) { .scrub-line { transition: none; } }
+
+/* ── ScrubHero fallback (mobile / reduced-motion): autoplay + dashboard, no scrub ── */
+.scrub-fallback { position: relative; min-height: 100svh; display: flex; align-items: flex-end; overflow: clip; background: var(--void); }
+.scrub-fallback-inner { position: relative; z-index: 10; width: 100%; padding: 96px max(20px, 4vw) max(24px, 4vh); }
