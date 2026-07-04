@@ -347,7 +347,8 @@ details.oneline input { width: 100%; padding: 10px 12px; border: 1px solid var(-
 .ld-demo-item { padding: 7px 10px; border-left: 2px solid transparent; border-radius: var(--r-sm); margin-bottom: 4px; }
 .ld-demo-item.on { background: var(--focus-soft); border-left-color: var(--focus); }
 .ld-demo-src { white-space: pre-line; font-size: 12.5px; line-height: 1.9; color: var(--ink-2); }
-.ld-wire path { stroke: var(--red); stroke-width: 1.6; stroke-dasharray: 160; stroke-dashoffset: 160; }
+.ld-wire path { stroke: var(--red); stroke-width: 1.6; stroke-dasharray: 160; stroke-dashoffset: 160;
+  filter: drop-shadow(0 0 3px rgba(47,107,255,.5)); }
 .ld-wire circle { fill: var(--red); opacity: 0; }
 .ld-io.in .ld-wire path { animation: wire 1s .5s cubic-bezier(.4, 0, .2, 1) forwards; }
 .ld-io.in .ld-wire circle { animation: dot .3s 1.35s ease forwards; }

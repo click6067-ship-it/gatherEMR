@@ -115,6 +115,8 @@ export default function Landing() {
         </div>
       </section>
 
+      <hr className="scanline" />
+
       {/* S3 — 25분과 */}
       <section id="specialties" className="ld-s3 ld-io">
         <h2 className="ld-h2 ink">25개 전문과목,<br />각자의 렌즈.</h2>
@@ -131,6 +133,8 @@ export default function Landing() {
           ))}
         </div>
       </section>
+
+      <hr className="scanline" />
 
       {/* S5 — CTA */}
       <section className="ld-s5 ld-io">
