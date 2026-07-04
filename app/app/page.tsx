@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { type Specialty, type Template } from '@/lib/specialties';
 import { SpecialtyPicker, type Picked } from '../components/SpecialtyPicker';
+import { ChartLens } from '../components/ChartLens';
 import { getSessionId } from '@/lib/session';
 import type { ResolvedItem, ResolvedSummary } from '@/lib/summary/summarize';
 
@@ -109,7 +110,7 @@ export default function Home() {
 
         {stage === 'pick' && (
           <section className="step panel">
-            <h1 className="q">어느 분과세요?</h1>
+            <h1 className="q ink play">어느 분과세요?</h1>
             <p className="sub">차트를 자기 분과 관점으로 요약해 드립니다. 계열을 눌러 펼치고 분과를 고르세요.</p>
             <SpecialtyPicker onPick={onPick} />
           </section>
@@ -118,7 +119,7 @@ export default function Home() {
         {stage === 'input' && template && (
           <section className="step panel">
             <button className="back" onClick={() => setStage('pick')}>← 분과 선택</button>
-            <h1 className="q">차트를 붙여넣으세요</h1>
+            <h1 className="q ink play">차트를 붙여넣으세요</h1>
             <p className="sub"><b>{chosenName}</b> 관점으로 요약합니다. 식별정보는 다음 단계에서 가립니다.</p>
             <div className="row" style={{ marginBottom: 8 }}>
               <label className="btn ghost" style={{ cursor: extracting ? 'default' : 'pointer', opacity: extracting ? 0.6 : 1 }}>
@@ -153,9 +154,10 @@ export default function Home() {
         {stage === 'preview' && (
           <section className="step panel">
             <button className="back" onClick={() => setStage('input')}>← 수정</button>
-            <h1 className="q">전송 전 비식별 확인</h1>
+            <h1 className="q ink play">전송 전 비식별 확인</h1>
             <p className="sub">식별자 후보 <b>{idCount}</b>건을 <span className="mono">███</span>로 가리고 날짜를 시프트했습니다. 남은 식별정보가 없는지 확인 후 요약하세요. (OpenAI엔 이 비식별본만 전송됩니다.)</p>
-            <pre className="preview-box mono">{masked}</pre>
+            <ChartLens text={masked} className="preview-box" />
+            <p className="hint-lens">커서로 훑어 남은 식별정보를 확인하세요.</p>
             <div className="row" style={{ marginTop: 14 }}>
               <button className="btn" disabled={busy} onClick={run}>{busy ? `${chosenName} 요약 중… (~20s)` : `확인했습니다 · ${chosenName} 요약 →`}</button>
             </div>

@@ -3,7 +3,6 @@
 import { useEffect } from 'react';
 import Link from 'next/link';
 import { GROUPS, SPECIALTIES } from '@/lib/specialties';
-import { HeroCanvas } from './components/HeroCanvas';
 
 /* Landing — "종이 위의 시네마" (DESIGN-V3-SPEC). 섹션당 카피 ≤2줄 + 시각 1개.
  * 모션: IO reveal만. 라이브러리 0. reduced-motion/no-JS 완독 가능. */
@@ -21,11 +20,13 @@ export default function Landing() {
 
   return (
     <main className="ld">
-      {/* S0 — hero: 차트가 요약으로 증류되는 6초 */}
+      {/* S0 — hero: 무드 영상 (종이 위의 빛) + 카피 */}
       <section className="ld-hero">
-        <HeroCanvas />
+        <video className="ld-video" autoPlay muted loop playsInline poster="/hero-poster.jpg" aria-hidden="true">
+          <source src="/hero-mood.webm" type="video/webm" />
+        </video>
         <div className="ld-hero-copy">
-          <h1>차트는 길다.<br />봐야 할 것은 짧다.</h1>
+          <h1 className="ink play">차트는 길다.<br />봐야 할 것은 짧다.</h1>
           <p>의대 교수를 위한 분과별 EMR 요약 — 문장마다 원문 근거.</p>
           <Link href="/app" className="btn ld-cta">차트 넣어보기 →</Link>
         </div>
@@ -34,7 +35,7 @@ export default function Landing() {
 
       {/* S2 — 해법 = 데모: 문장 → 원문 연결선 */}
       <section className="ld-s2 ld-io">
-        <h2 className="ld-h2">분과를 고르면,<br />그 분과의 눈으로.</h2>
+        <h2 className="ld-h2 ink">분과를 고르면,<br />그 분과의 눈으로.</h2>
         <div className="ld-demo">
           <div className="ld-demo-pane">
             <div className="ld-demo-label">순환기내과 요약</div>
@@ -58,7 +59,7 @@ export default function Landing() {
 
       {/* S3 — 26분과 */}
       <section className="ld-s3 ld-io">
-        <h2 className="ld-h2">26개 전문과목,<br />각자의 렌즈.</h2>
+        <h2 className="ld-h2 ink">26개 전문과목,<br />각자의 렌즈.</h2>
         <div className="ld-groups">
           {GROUPS.map((gr, gi) => (
             <div key={gr.id} className="ld-group" style={{ ['--c' as string]: gr.color, ['--d' as string]: `${gi * 120}ms` } as React.CSSProperties}>
@@ -75,7 +76,7 @@ export default function Landing() {
 
       {/* S5 — CTA */}
       <section className="ld-s5 ld-io">
-        <h2 className="ld-h2">지금 차트 하나<br />넣어보세요.</h2>
+        <h2 className="ld-h2 ink">지금 차트 하나<br />넣어보세요.</h2>
         <Link href="/app" className="btn ld-cta">시작하기 →</Link>
         <footer className="ld-foot">
           <span>교육·연구 참고용 — 진료 판단을 대체하지 않으며, 식별정보가 있는 차트는 업로드 전 확인 단계에서 가려집니다.</span>
