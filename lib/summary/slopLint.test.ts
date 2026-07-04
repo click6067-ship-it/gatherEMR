@@ -26,4 +26,11 @@ describe('slopLint (generic shape)', () => {
   it('does not flag a pure symptom trend with no lab/vital token', () => {
     expect(slopLint({ ...base, oneLiner: [item('Rest 후 pain 7/10 → 3/10으로 감소')] })).toEqual([]);
   });
+
+  it('flags AI-toned hedge/filler phrasing (문구 AI 말투)', () => {
+    const rules = slopLint({ ...base, oneLiner: [item('ACS 가능성이 높은 것으로 사료된다')] }).map((f) => f.rule);
+    expect(rules).toContain('ai-tone');
+    // terse clinical phrasing does not flag
+    expect(slopLint({ ...base, oneLiner: [item('r/o ACS/NSTEMI, Troponin 0.8→2.1 (19:22→20:46)')] })).toEqual([]);
+  });
 });

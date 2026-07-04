@@ -86,7 +86,7 @@ export async function POST(req: Request) {
       /* Supabase unavailable (paused) — skip persistence. */
     }
 
-    return NextResponse.json({ summary, lint, chunks, documentId });
+    return NextResponse.json({ summary, lint, chunks, documentId, stored: Boolean(documentId) });
   } catch (e) {
     guard.record(-RESERVE_USD);
     return NextResponse.json({ error: (e as Error).message }, { status: 500 });

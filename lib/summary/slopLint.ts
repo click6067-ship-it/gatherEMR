@@ -8,6 +8,8 @@ const VITALS = /\b(spo2|bp|hr|rr|temp|map|gcs|etco2|o2 sat)\b/i;
 const TREND = /(→|↑|↓|상승|하강|증가|감소|추세|trend)/;
 const TIME = /\b\d{1,2}:\d{2}\b/;
 const PENDING = /(pending|ordered|대기|추적|f\/u|보류|미시행|예정|계획)/i;
+// "AI 말투" tells — hedge/filler phrasing a terse clinical summary should not carry.
+const AI_TONE = /(사료된다|사료됨|사료됩니다|생각됩니다|보여집니다|판단됩니다|종합적으로 볼 때|전반적으로 볼 때|면밀한 (관찰|경과관찰)이 (요구|필요)|추가적인 평가가 필요할 것으로)/;
 
 function allItems(s: Summary): SummaryItem[] {
   return [
@@ -35,6 +37,9 @@ export function slopLint(summary: Summary): LintFinding[] {
     }
     if (clinical && TREND.test(t) && !TIME.test(t)) {
       findings.push({ rule: 'trend-without-time', text: t });
+    }
+    if (AI_TONE.test(t)) {
+      findings.push({ rule: 'ai-tone', text: t });
     }
   }
   return findings;
