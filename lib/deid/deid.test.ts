@@ -45,6 +45,16 @@ describe('de-id — codex-review regressions', () => {
     expect(masked).not.toContain('9001011234567');
   });
 
+  it('detects Korean EMR identifier labels (환자명·등록번호)', () => {
+    const t = '환자명: 홍길동  등록번호: 00123456  67세';
+    const ids = detect(t);
+    expect(ids.find((i) => i.kind === 'name')?.text).toBe('홍길동');
+    expect(ids.some((i) => i.kind === 'mrn' && i.text === '00123456')).toBe(true);
+    const { masked } = mask(t, ids, { shiftDays: 0 });
+    expect(masked).not.toContain('홍길동');
+    expect(masked).not.toContain('00123456');
+  });
+
   it('masks an invalid calendar date as a block instead of shifting to a wrong date', () => {
     const t = 'admit 2026-02-31';
     const { masked } = mask(t, detect(t), { shiftDays: 0 });

@@ -37,6 +37,7 @@ export default function Home() {
   const [lint, setLint] = useState<{ rule: string }[]>([]);
   const [sel, setSel] = useState<ResolvedItem | null>(null);
   const [busy, setBusy] = useState(false);
+  const [extracting, setExtracting] = useState(false);
   const [err, setErr] = useState('');
   const markRef = useRef<HTMLElement>(null);
 
@@ -54,6 +55,17 @@ export default function Home() {
     else setStage('input');
   }
   function pickSub(t: Template | null) { setSub(t); setStage('input'); }
+
+  async function onFile(f: File) {
+    setExtracting(true); setErr('');
+    try {
+      const fd = new FormData(); fd.append('file', f);
+      const r = await fetch('/api/extract', { method: 'POST', body: fd });
+      const j = await r.json();
+      if (!r.ok) throw new Error(j.error ?? 'error');
+      setText(j.text);
+    } catch (e) { setErr((e as Error).message); } finally { setExtracting(false); }
+  }
 
   async function preview() {
     setBusy(true); setErr('');
@@ -151,7 +163,16 @@ export default function Home() {
             <button className="back" onClick={() => setStage(specialty?.subspecialties ? 'sub' : 'specialty')}>← 분과</button>
             <h1 className="q">차트를 붙여넣으세요</h1>
             <p className="sub"><b>{chosenName}</b> 관점으로 요약합니다. 식별정보는 다음 단계에서 가립니다.</p>
-            <textarea className="ta mono" value={text} onChange={(e) => setText(e.target.value)} placeholder="EMR 케이스 텍스트를 붙여넣으세요" />
+            <div className="row" style={{ marginBottom: 8 }}>
+              <label className="btn ghost" style={{ cursor: extracting ? 'default' : 'pointer', opacity: extracting ? 0.6 : 1 }}>
+                {extracting ? '추출 중…' : '📎 파일 첨부'}
+                <input type="file" hidden disabled={extracting}
+                  accept=".txt,.md,.pdf,.png,.jpg,.jpeg,.webp,.bmp,.tiff,.tif,.heic,.hwp,.hwpx,.docx,.pptx,.xlsx"
+                  onChange={(e) => { const f = e.target.files?.[0]; if (f) onFile(f); e.currentTarget.value = ''; }} />
+              </label>
+              <span style={{ fontSize: 12, color: 'var(--muted)' }}>PDF · 이미지 · HWP · DOCX — 또는 아래에 붙여넣기</span>
+            </div>
+            <textarea className="ta mono" value={text} onChange={(e) => setText(e.target.value)} placeholder="EMR 케이스 텍스트를 붙여넣거나, 위에서 파일을 첨부하세요 (추출된 텍스트가 여기 표시됩니다)" />
             <div className="chips">
               {template.chips.map((c) => (
                 <button key={c} className={`chip${focus === c ? ' on' : ''}`} onClick={() => setFocus(focus === c ? '' : c)}>{c}</button>
