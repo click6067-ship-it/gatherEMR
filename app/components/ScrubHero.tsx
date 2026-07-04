@@ -52,7 +52,7 @@ export function ScrubHero() {
           <p className="scrub-line l0">차트는 길다.</p>
           <p className="scrub-line l1">봐야 할 것만, 남긴다.</p>
         </div>
-        <div className="scrub-payoff" style={{ opacity: payoff, transform: `translateY(${(1 - payoff) * 28}px)` }}>
+        <div className="scrub-payoff" inert={payoff === 0} style={{ opacity: payoff, transform: `translateY(${(1 - payoff) * 28}px)` }}>
           <HeroDashboard />
         </div>
       </div>
