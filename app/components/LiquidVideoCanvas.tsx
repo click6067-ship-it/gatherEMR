@@ -4,11 +4,13 @@ import { lerp } from './scrubMath';
 
 export function LiquidVideoCanvas({ progressRef, poster, srcWebm, srcMp4 }: {
   progressRef: React.MutableRefObject<number>;
-  poster: string; srcWebm: string; srcMp4?: string;
+  poster: string; srcWebm?: string; srcMp4?: string;
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   useEffect(() => {
     const video = videoRef.current; if (!video) return;
+    // interim poster-only (no video source yet): no 'canplay' will fire, so reveal the still immediately
+    if (!srcWebm && !srcMp4) requestAnimationFrame(() => video.classList.add('ready'));
     let raf = 0, smoothed = 0, isSeeking = false, errors = 0;
     let nextSeekTime: number | null = null;
 
@@ -42,12 +44,12 @@ export function LiquidVideoCanvas({ progressRef, poster, srcWebm, srcMp4 }: {
       video.removeEventListener('error', onError);
       video.removeEventListener('canplay', onCanPlay);
     };
-  }, [progressRef]);
+  }, [progressRef, srcWebm, srcMp4]);
 
   return (
     <video ref={videoRef} className="lvc-video" muted playsInline preload="auto" poster={poster} aria-hidden="true">
       {srcMp4 && <source src={srcMp4} type="video/mp4" />}
-      <source src={srcWebm} type="video/webm" />
+      {srcWebm && <source src={srcWebm} type="video/webm" />}
     </video>
   );
 }
