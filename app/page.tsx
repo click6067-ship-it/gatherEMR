@@ -1,235 +1,137 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
-import { type Specialty, type Template } from '@/lib/specialties';
-import { SpecialtyPicker, type Picked } from './components/SpecialtyPicker';
-import { getSessionId } from '@/lib/session';
-import type { ResolvedItem, ResolvedSummary } from '@/lib/summary/summarize';
+import { useEffect, useRef } from 'react';
+import Link from 'next/link';
+import { GROUPS, SPECIALTIES } from '@/lib/specialties';
+import { HeroCanvas } from './components/HeroCanvas';
 
-const SAMPLE = `[Triage 2026-06-18 18:42]
-Name: 홍길동  MRN: 00123456  Age/Sex: 67/M
-CC: chest discomfort, SOB
-Vitals: BP 168/94, HR 104, RR 22, SpO2 91% room air
-Pain 7/10, sweating (+), left shoulder radiation (+)
-[Nursing 18:51] "가슴이 꽉 막힌 느낌" onset about 1hr ago. O2 2L NC -> SpO2 95%. Home meds: "warfarin? 당뇨약" patient unsure.
-[ED note 19:08] Pain now 3/10 after rest. Warfarin - not taking? (old AF?) Allergy: not documented.
-[EKG 19:10] Sinus tach 102. Nonspecific ST-T. No STEMI criteria. QTc 458.
-[Labs] Troponin-I 0.8 (19:22) -> 2.1 (20:46). Cr 1.8, eGFR 38, K 5.1, INR 1.7.
-Repeat Troponin ordered 21:10 - pending at sign-out.`;
+/* Landing — "종이 위의 시네마" (DESIGN-V3-SPEC). 섹션당 카피 ≤2줄 + 시각 1개.
+ * 모션: IO reveal + S1 scroll-progress만. 라이브러리 0. reduced-motion/no-JS 완독 가능. */
 
-type Stage = 'pick' | 'input' | 'preview' | 'result';
-const STEP_LABELS: [Stage, string][] = [
-  ['pick', '01 분과'], ['input', '02 차트'], ['preview', '03 확인'], ['result', '04 결과'],
+const FRAGMENTS = [
+  '[Nursing 18:51] "가슴이 꽉 막힌 느낌" onset 1hr',
+  '[EKG 19:10] sinus tach 102 · nonspecific ST-T',
+  'home meds: warfarin? 당뇨약 — patient unsure',
+  '[Lab 20:46] Troponin-I 2.1 ↑ · INR 1.7',
+  '[ED 19:08] pain 3/10 after rest · allergy n/d',
+  'Cr 1.8 · eGFR 38 · K 5.1 — repeat pending',
 ];
 
-const LABEL_KO: Record<ResolvedItem['label'], string> = { explicit: '원문', derived: '추론', uncertain: '불확실' };
-
-export default function Home() {
-  const [stage, setStage] = useState<Stage>('pick');
-  const [specialty, setSpecialty] = useState<Specialty | null>(null);
-  const [sub, setSub] = useState<Template | null>(null);
-  const [pickedLabel, setPickedLabel] = useState('');
-  const [text, setText] = useState('');
-  const [focus, setFocus] = useState('');
-  const [consent, setConsent] = useState(false);
-  const [masked, setMasked] = useState('');
-  const [idCount, setIdCount] = useState(0);
-  const [summary, setSummary] = useState<ResolvedSummary | null>(null);
-  const [lint, setLint] = useState<{ rule: string }[]>([]);
-  const [sel, setSel] = useState<ResolvedItem | null>(null);
-  const [busy, setBusy] = useState(false);
-  const [extracting, setExtracting] = useState(false);
-  const [err, setErr] = useState('');
-  const markRef = useRef<HTMLElement>(null);
+export default function Landing() {
+  const s1ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (sel && markRef.current) markRef.current.scrollIntoView({ block: 'center', behavior: 'smooth' });
-  }, [sel]);
+    // IO reveal (.ld-io → .in)
+    const io = new IntersectionObserver(
+      (es) => es.forEach((e) => e.isIntersecting && e.target.classList.add('in')),
+      { threshold: 0.35 },
+    );
+    document.querySelectorAll('.ld-io').forEach((el) => io.observe(el));
 
-  const template: Template | null = sub ?? specialty;
-  const chosenName = pickedLabel || specialty?.name;
-
-  function onPick(p: Picked) { setSpecialty(p.specialty); setSub(p.sub); setPickedLabel(p.label); setStage('input'); }
-
-  async function onFile(f: File) {
-    setExtracting(true); setErr('');
-    try {
-      const fd = new FormData(); fd.append('file', f);
-      const r = await fetch('/api/extract', { method: 'POST', body: fd });
-      const j = await r.json();
-      if (!r.ok) throw new Error(j.error ?? 'error');
-      setText(j.text);
-    } catch (e) { setErr((e as Error).message); } finally { setExtracting(false); }
-  }
-
-  async function preview() {
-    setBusy(true); setErr('');
-    try {
-      const r = await fetch('/api/deid-preview', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ text }) });
-      const j = await r.json();
-      if (!r.ok) throw new Error(j.error ?? 'error');
-      setMasked(j.masked); setIdCount(j.identifiers.length); setStage('preview');
-    } catch (e) { setErr((e as Error).message); } finally { setBusy(false); }
-  }
-
-  async function run() {
-    if (!specialty) return;
-    setBusy(true); setErr('');
-    try {
-      const r = await fetch('/api/summarize', {
-        method: 'POST', headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ maskedText: masked, specialtyId: specialty.id, subId: sub?.id, focus: focus || undefined, sessionId: getSessionId() }),
-      });
-      const j = await r.json();
-      if (!r.ok) throw new Error(j.error ?? 'error');
-      setSummary(j.summary); setLint(j.lint ?? []); setSel(null); setStage('result');
-    } catch (e) { setErr((e as Error).message); } finally { setBusy(false); }
-  }
-
-  function reset() {
-    setStage('pick'); setSpecialty(null); setSub(null); setPickedLabel('');
-    setText(''); setFocus(''); setConsent(false); setMasked(''); setSummary(null); setSel(null); setErr('');
-  }
+    // S1 scroll progress → CSS var --p (fragments scatter+blur)
+    const el = s1ref.current;
+    let raf = 0;
+    const tick = () => {
+      if (el) {
+        const r = el.getBoundingClientRect();
+        const p = Math.min(1, Math.max(0, -r.top / (r.height - innerHeight || 1)));
+        el.style.setProperty('--p', String(p));
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    if (!matchMedia('(prefers-reduced-motion: reduce)').matches) raf = requestAnimationFrame(tick);
+    else el?.style.setProperty('--p', '0.85');
+    return () => { io.disconnect(); cancelAnimationFrame(raf); };
+  }, []);
 
   return (
-    <main>
-      <header className="top">
-        <div className="wrap">
-          <span className="brand">gatherEMR</span>
-          <span className="crumb">
-            {STEP_LABELS.map(([s, t], i) => (
-              <span key={s}>{i > 0 && ' · '}<b style={{ color: stage === s ? undefined : 'var(--muted)' }}>{t}</b></span>
-            ))}
-          </span>
+    <main className="ld">
+      {/* S0 — hero: 차트가 요약으로 증류되는 6초 */}
+      <section className="ld-hero">
+        <HeroCanvas />
+        <div className="ld-hero-copy">
+          <h1>차트는 길다.<br />봐야 할 것은 짧다.</h1>
+          <p>의대 교수를 위한 분과별 EMR 요약 — 문장마다 원문 근거.</p>
+          <Link href="/app" className="btn ld-cta">차트 넣어보기 →</Link>
         </div>
-      </header>
+        <div className="ld-scrollcue" aria-hidden="true">스크롤</div>
+      </section>
 
-      <div className="wrap">
-        {err && <div className="alert">⚠ {err}</div>}
+      {/* S1 — 문제: 기록의 부피 (질감으로만) */}
+      <section className="ld-s1" ref={s1ref}>
+        <div className="ld-s1-stick">
+          <div className="ld-frags" aria-hidden="true">
+            {FRAGMENTS.map((f, i) => (
+              <div key={i} className="ld-frag mono" style={{ ['--i' as string]: i } as React.CSSProperties}>{f}</div>
+            ))}
+          </div>
+          <h2 className="ld-h2">3일치 기록,<br />15분의 외래.</h2>
+        </div>
+      </section>
 
-        {stage === 'pick' && (
-          <section className="step panel">
-            <h1 className="q">어느 분과세요?</h1>
-            <p className="sub">차트를 자기 분과 관점으로 요약해 드립니다. 계열을 눌러 펼치고 분과를 고르세요.</p>
-            <SpecialtyPicker onPick={onPick} />
-          </section>
-        )}
+      {/* S2 — 해법 = 데모: 문장 → 원문 연결선 */}
+      <section className="ld-s2 ld-io">
+        <h2 className="ld-h2">분과를 고르면,<br />그 분과의 눈으로.</h2>
+        <div className="ld-demo">
+          <div className="ld-demo-pane">
+            <div className="ld-demo-label">순환기내과 요약</div>
+            <div className="ld-demo-item on"><span className="badge derived">추론</span> Troponin 0.8 → 2.1 상승, r/o NSTEMI</div>
+            <div className="ld-demo-item"><span className="badge uncertain">불확실</span> warfarin 복용 여부 불명 (INR 1.7)</div>
+            <div className="ld-demo-item"><span className="badge explicit">원문</span> EKG no STEMI criteria, QTc 458</div>
+          </div>
+          <svg className="ld-wire" viewBox="0 0 120 80" aria-hidden="true">
+            <path d="M4,18 C 50,18 70,52 116,52" fill="none" />
+            <circle cx="116" cy="52" r="3" />
+          </svg>
+          <div className="ld-demo-pane mono ld-demo-src">
+            <div className="ld-demo-label">비식별 원문</div>
+            [Lab 19:22] Troponin-I 0.8{'\n'}
+            <mark>[Lab 20:46] Troponin-I 2.1</mark>{'\n'}
+            Cr 1.8 · eGFR 38 · K 5.1 · INR 1.7
+          </div>
+        </div>
+        <p className="ld-sub">문장을 누르면 원문의 그 자리로 — 확인은 언제나 당신의 눈으로.</p>
+      </section>
 
-        {stage === 'input' && template && (
-          <section className="step panel">
-            <button className="back" onClick={() => setStage('pick')}>← 분과 선택</button>
-            <h1 className="q">차트를 붙여넣으세요</h1>
-            <p className="sub"><b>{chosenName}</b> 관점으로 요약합니다. 식별정보는 다음 단계에서 가립니다.</p>
-            <div className="row" style={{ marginBottom: 8 }}>
-              <label className="btn ghost" style={{ cursor: extracting ? 'default' : 'pointer', opacity: extracting ? 0.6 : 1 }}>
-                {extracting ? '추출 중…' : '📎 파일 첨부'}
-                <input type="file" hidden disabled={extracting}
-                  accept=".txt,.md,.pdf,.png,.jpg,.jpeg,.webp,.bmp,.tiff,.tif,.heic,.hwp,.hwpx,.docx,.pptx,.xlsx"
-                  onChange={(e) => { const f = e.target.files?.[0]; if (f) onFile(f); e.currentTarget.value = ''; }} />
-              </label>
-              <span style={{ fontSize: 12, color: 'var(--muted)' }}>PDF · 이미지 · HWP · DOCX — 또는 아래에 붙여넣기</span>
-            </div>
-            <textarea className="ta mono" value={text} onChange={(e) => setText(e.target.value)} placeholder="EMR 케이스 텍스트를 붙여넣거나, 위에서 파일을 첨부하세요 (추출된 텍스트가 여기 표시됩니다)" />
-            <div className="chips">
-              {template.chips.map((c) => (
-                <button key={c} className={`chip${focus === c ? ' on' : ''}`} onClick={() => setFocus(focus === c ? '' : c)}>{c}</button>
-              ))}
-            </div>
-            <details className="oneline">
-              <summary>직접 입력 (선택)</summary>
-              <input value={focus} onChange={(e) => setFocus(e.target.value)} placeholder="예: 이번 입원 신장기능 변화 중심으로" />
-            </details>
-            <label className="consent">
-              <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} />
-              <span>비식별 교육·연구용 케이스이며, 비식별본 저장에 동의합니다.</span>
-            </label>
-            <div className="row">
-              <button className="btn" disabled={busy || !text.trim() || !consent} onClick={preview}>{busy ? '처리 중…' : '비식별 확인 →'}</button>
-              <button className="btn ghost" onClick={() => setText(SAMPLE)}>샘플 채우기</button>
-            </div>
-          </section>
-        )}
-
-        {stage === 'preview' && (
-          <section className="step panel">
-            <button className="back" onClick={() => setStage('input')}>← 수정</button>
-            <h1 className="q">전송 전 비식별 확인</h1>
-            <p className="sub">식별자 후보 <b>{idCount}</b>건을 <span className="mono">███</span>로 가리고 날짜를 시프트했습니다. 남은 식별정보가 없는지 확인 후 요약하세요. (OpenAI엔 이 비식별본만 전송됩니다.)</p>
-            <pre className="preview-box mono">{masked}</pre>
-            <div className="row" style={{ marginTop: 14 }}>
-              <button className="btn" disabled={busy} onClick={run}>{busy ? `${chosenName} 요약 중… (~20s)` : `확인했습니다 · ${chosenName} 요약 →`}</button>
-            </div>
-          </section>
-        )}
-
-        {stage === 'result' && summary && (
-          <section className="step" style={{ paddingBottom: 40 }}>
-            <div className="row" style={{ justifyContent: 'space-between', margin: '14px 0 10px' }}>
-              <div style={{ fontSize: 13, color: 'var(--muted)' }}>
-                <b style={{ color: 'var(--ink)' }}>{chosenName}</b> 요약 · 문장을 누르면 → 오른쪽 원문 위치로.
-              </div>
-              <button className="btn ghost" onClick={reset}>새 케이스</button>
-            </div>
-            {lint.length > 0 && <div className="lintbar">slop-린트 {lint.length}건 (참고): {lint.map((l) => l.rule).join(', ')}</div>}
-            <div className="split">
-              <div className="pane">
-                <h3>{chosenName} 요약</h3>
-                {summary.cannotMiss.length > 0 && (
-                  <div className="warn">
-                    <div className="blk-title">⚠️ 놓치면 안 될 것</div>
-                    {summary.cannotMiss.map((it, i) => <Item key={i} it={it} sel={sel} onSel={setSel} />)}
-                  </div>
-                )}
-                <Block title="한 줄 문제표상" items={summary.oneLiner} sel={sel} onSel={setSel} />
-                {summary.blocks.map((b, i) => (
-                  <div key={i}>
-                    <div className="blk-title">{String(i + 1).padStart(2, '0')} · {b.title}</div>
-                    {b.items.map((it, j) => <Item key={j} it={it} sel={sel} onSel={setSel} />)}
-                  </div>
+      {/* S3 — 26분과 */}
+      <section className="ld-s3 ld-io">
+        <h2 className="ld-h2">26개 전문과목,<br />각자의 렌즈.</h2>
+        <div className="ld-groups">
+          {GROUPS.map((gr, gi) => (
+            <div key={gr.id} className="ld-group" style={{ ['--c' as string]: gr.color, ['--d' as string]: `${gi * 120}ms` } as React.CSSProperties}>
+              <span className="ld-group-name">{gr.label}</span>
+              <span className="ld-group-chips">
+                {SPECIALTIES.filter((s) => s.group === gr.id).map((s, i) => (
+                  <Link key={s.id} href="/app" className="ld-chip" style={{ ['--d' as string]: `${gi * 120 + i * 40}ms` } as React.CSSProperties}>{s.name}</Link>
                 ))}
-                <Block title="투약·치료 변경" items={summary.medChanges} sel={sel} onSel={setSel} />
-                <Block title="⚠ 불확실·누락" items={summary.gaps} sel={sel} onSel={setSel} />
-              </div>
-              <div className="pane right">
-                <h3>비식별 원문</h3>
-                <pre className="orig mono">
-                  {sel ? (<>{masked.slice(0, sel.span.start)}<mark ref={markRef}>{masked.slice(sel.span.start, sel.span.end)}</mark>{masked.slice(sel.span.end)}</>) : masked}
-                </pre>
-                {sel && (
-                  <div className="ev">
-                    <div style={{ fontWeight: 700, marginBottom: 4 }}>선택한 근거</div>
-                    <div><b>주장</b> {sel.text}</div>
-                    {sel.quote && <div style={{ marginTop: 3 }}><b>원문 인용</b> <span className="mono">“{sel.quote}”</span></div>}
-                    <div style={{ marginTop: 3 }}><b>라벨</b> <Badge label={sel.label} /> · <b>인용 청크</b> {sel.citations.join(', ')}</div>
-                  </div>
-                )}
-              </div>
+              </span>
             </div>
-          </section>
-        )}
-      </div>
+          ))}
+        </div>
+      </section>
+
+      {/* S4 — 신뢰 */}
+      <section className="ld-s4 ld-io">
+        <h2 className="ld-h2">비식별본만 저장.<br />근거 없는 문장은 표시하지 않습니다.</h2>
+        <div className="ld-trust">
+          <div className="ld-mask mono">환자명: <span className="ld-mask-flip"><span>홍길동</span><span>███</span></span> · 등록번호: <span className="ld-mask-flip"><span>00123456</span><span>████████</span></span></div>
+          <div className="ld-badges">
+            <span className="badge explicit">원문</span>
+            <span className="badge derived">추론</span>
+            <span className="badge uncertain">불확실</span>
+          </div>
+        </div>
+      </section>
+
+      {/* S5 — CTA */}
+      <section className="ld-s5 ld-io">
+        <h2 className="ld-h2">지금 차트 하나<br />넣어보세요.</h2>
+        <Link href="/app" className="btn ld-cta">시작하기 →</Link>
+        <footer className="ld-foot">
+          <span>교육·연구 참고용 — 진료 판단을 대체하지 않으며, 식별정보가 있는 차트는 업로드 전 확인 단계에서 가려집니다.</span>
+          <span>© 2026 gatherEMR</span>
+        </footer>
+      </section>
     </main>
-  );
-}
-
-function Badge({ label }: { label: ResolvedItem['label'] }) {
-  return <span className={`badge ${label}`}>{LABEL_KO[label]}</span>;
-}
-
-function Item({ it, sel, onSel }: { it: ResolvedItem; sel: ResolvedItem | null; onSel: (i: ResolvedItem) => void }) {
-  return (
-    <button className={`item${it === sel ? ' on' : ''}`} onClick={() => onSel(it)}>
-      <Badge label={it.label} /> <span style={{ marginLeft: 4 }}>{it.text}</span>
-    </button>
-  );
-}
-
-function Block({ title, items, sel, onSel }: { title: string; items: ResolvedItem[]; sel: ResolvedItem | null; onSel: (i: ResolvedItem) => void }) {
-  if (!items || items.length === 0) return null;
-  return (
-    <div>
-      <div className="blk-title">{title}</div>
-      {items.map((it, i) => <Item key={i} it={it} sel={sel} onSel={onSel} />)}
-    </div>
   );
 }

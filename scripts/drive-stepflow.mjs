@@ -2,7 +2,7 @@ import { createRequire } from 'module';
 const require = createRequire('/home/click/.claude/tools/headless/package.json');
 const { chromium } = require('playwright');
 
-const BASE = process.env.BASE ?? 'http://localhost:4400';
+const BASE = process.env.BASE ?? 'http://localhost:4400/app';
 const OUT = process.env.OUT ?? '/tmp/stepflow.png';
 
 const browser = await chromium.launch({ headless: true });
