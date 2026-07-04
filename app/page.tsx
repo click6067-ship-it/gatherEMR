@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { GROUPS, SPECIALTIES } from '@/lib/specialties';
-import { HeroDashboard } from '@/app/components/HeroDashboard';
+import { ScrubHero } from '@/app/components/ScrubHero';
 
 /* Landing — Bio-Age Dashboard 구도 × gatherEMR 색 (사용자 확정 벤치마킹).
  * 히어로 = 영상 위 하단 정렬 잉크-유리 대시보드: 주인공 카드(카운트업) +
@@ -86,14 +86,8 @@ export default function Landing() {
         </div>
       )}
 
-      {/* S0 — hero: 영상 위 잉크-유리 대시보드 (Bio-Age 구도) */}
-      <section className="ld-hero">
-        <video className="ld-video" autoPlay muted loop playsInline poster="/hero-poster.jpg" aria-hidden="true">
-          <source src="/hero-mood.webm" type="video/webm" />
-        </video>
-
-        <HeroDashboard />
-      </section>
+      {/* S0 — hero: 핀 스크럽 — 영상 스크럽 + 카피 비트 + 페이오프 대시보드 */}
+      <ScrubHero />
 
       {/* S2 — 해법 = 데모: 문장 → 원문 연결선 */}
       <section id="demo" className="ld-s2 ld-io">
