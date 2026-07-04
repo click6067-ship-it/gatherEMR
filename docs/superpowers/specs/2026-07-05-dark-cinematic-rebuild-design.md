@@ -67,11 +67,8 @@
 
 ### 5.4 중앙 히어로
 - eyebrow(uppercase·mono·tracking, white/80, `text-xs`/`text-sm`): *"교육·연구용 비식별 EMR 요약"*.
-- **헤드라인** 2줄, `text-5xl`(mobile)→`text-8xl~9xl`(xl), `line-height:.85`, tracking-tighter:
-  - 라인1(화이트, weight500): *"긴 차트에서"*
-  - 라인2(**블루 아크 시머 홀로그램**): *"핵심만."*
-  - (대체안 준비: "차트는 길다." / "봐야 할 것만." — 구현 중 A/B)
-- **CTA**: *"차트 넣어보기 →"* (인라인 arrow SVG). rounded-full, 배경 `--shine`(화이트) 또는 다크(hover 대비)—다크 히어로라 **화이트 버튼**(black text) 추천. hover 시 arrow translate-x.
+- **헤드라인**(확정): *"진료차트를 요약하여 분과별 환자의 핵심만 파악합니다."* — 완결 문장형이라 초대형 슬로건이 아닌 **스테이트먼트 헤드라인**: `text-4xl`(mobile)→`text-6xl~7xl`(xl), `line-height:1.12`, `letter-spacing:-0.03em`, weight 500. 화이트 텍스트에 **"핵심만"** 한 구절만 블루 아크 시머 홀로그램(`.shiny`).
+- **CTA**(확정 = 다크 글래스): *"차트 넣어보기 →"* (인라인 arrow SVG). rounded-full, `background:rgba(255,255,255,.07)` + 보더 `rgba(100,206,251,.35)` + `backdrop-filter:blur(10px)`, hover 시 배경 살짝 밝아짐 + arrow `translateX`.
 
 ### 5.5 ShinyText(홀로그램) 스펙 — CSS
 - 베이스 `--arc(#64CEFB)`, 광선 `--shine(#fff)`, 주기 3s, 스프레드 ~100deg 대응.
@@ -116,7 +113,6 @@
 - /app 기능 회귀 없음: pick→input→preview→result E2E 동작(로직 미변경 확인).
 
 ## 11. 열린 항목 (구현 중 튜닝)
-- 헤드라인 문구 A/B("긴 차트에서/핵심만." vs "차트는 길다./봐야 할 것만.").
 - 블러/디밍 강도(가독성 vs 영상 존재감).
-- CTA 버튼 컬러(화이트 vs 다크 글래스).
 - nav 링크 세트 최종.
+- 시머 강조 구절이 "핵심만"만인지 "분과별 환자의 핵심만"인지(구현 중 육안).
