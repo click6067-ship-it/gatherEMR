@@ -8,39 +8,25 @@ const chunks: Chunk[] = [
   { id: 'c2', start: 6, end: 11, line: 2, text: 'bbbbb' },
 ];
 
-const empty: Summary = {
-  acuity: [], oneLiner: [], riskModifiers: [], immediateThreats: [], pending: [],
-  hpi: [], vitals: [], keyLabs: [], ddx: { working: [], cannotMiss: [], ruledOut: [] },
-  txResponse: [], disposition: [], gaps: [],
-};
+const empty: Summary = { oneLiner: [], cannotMiss: [], blocks: [], medChanges: [], gaps: [] };
 
-describe('enforceCitations', () => {
-  it('drops uncited and bad-cite items, strips bad ids, preserves order', () => {
+describe('enforceCitations (generic shape)', () => {
+  it('drops uncited/bad-cite items, strips bad ids, removes empty blocks', () => {
     const s: Summary = {
       ...empty,
-      acuity: [
-        { text: 'valid', citations: ['c1'], label: 'explicit' },
-        { text: 'uncited', citations: [], label: 'derived' },
-        { text: 'bad cite', citations: ['c99'], label: 'explicit' },
-        { text: 'mixed', citations: ['c99', 'c2'], label: 'derived' },
+      oneLiner: [
+        { text: 'valid', quote: null, citations: ['c1'], label: 'explicit' },
+        { text: 'uncited', quote: null, citations: [], label: 'derived' },
+        { text: 'mixed', quote: null, citations: ['c99', 'c2'], label: 'derived' },
+      ],
+      blocks: [
+        { title: 'A', items: [{ text: 'keep', quote: null, citations: ['c1'], label: 'explicit' }] },
+        { title: 'B', items: [{ text: 'drop', quote: null, citations: [], label: 'uncertain' }] },
       ],
     };
     const out = enforceCitations(s, chunks);
-    expect(out.acuity.map((i) => i.text)).toEqual(['valid', 'mixed']);
-    expect(out.acuity[1].citations).toEqual(['c2']); // c99 stripped
-  });
-
-  it('filters nested DDx items too', () => {
-    const s: Summary = {
-      ...empty,
-      ddx: {
-        working: [{ text: 'ok', citations: ['c1'], label: 'derived' }],
-        cannotMiss: [{ text: 'drop', citations: [], label: 'uncertain' }],
-        ruledOut: [],
-      },
-    };
-    const out = enforceCitations(s, chunks);
-    expect(out.ddx.working).toHaveLength(1);
-    expect(out.ddx.cannotMiss).toHaveLength(0);
+    expect(out.oneLiner.map((i) => i.text)).toEqual(['valid', 'mixed']);
+    expect(out.oneLiner[1].citations).toEqual(['c2']); // c99 stripped
+    expect(out.blocks.map((b) => b.title)).toEqual(['A']); // empty block B removed
   });
 });
