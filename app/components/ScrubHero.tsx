@@ -35,8 +35,9 @@ export function ScrubHero() {
   if (!scrub) {
     return (
       <section className="scrub-fallback">
-        {/* interim: confirmed Flip Scan still as poster; swap in the linear video (add <source>) when ready */}
-        <video className="lvc-video ready" muted playsInline poster="/hero-first-frame.jpg" aria-hidden="true" />
+        <video className="lvc-video ready" autoPlay muted loop playsInline poster="/hero-flipscan-poster.jpg" aria-hidden="true">
+          <source src="/hero-flipscan.mp4" type="video/mp4" />
+        </video>
         <div className="scrub-fallback-inner"><HeroDashboard /></div>
       </section>
     );
@@ -45,8 +46,7 @@ export function ScrubHero() {
   return (
     <div className="scrub-wrap" ref={wrapRef}>
       <div className="scrub-stage">
-        {/* interim: no srcWebm → the confirmed Flip Scan still shows as poster; pass srcWebm when the linear video is ready */}
-        <LiquidVideoCanvas progressRef={progressRef} poster="/hero-first-frame.jpg" />
+        <LiquidVideoCanvas progressRef={progressRef} poster="/hero-flipscan-poster.jpg" srcMp4="/hero-flipscan.mp4" />
         <div className="scrub-wash" style={{ opacity: payoff }} aria-hidden="true" />
         <div className="scrub-copy" data-beat={beat}>
           <p className="scrub-line l0">차트는 길다.</p>
