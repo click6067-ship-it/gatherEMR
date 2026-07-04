@@ -53,13 +53,22 @@ export default function Landing() {
 
   return (
     <main className="ld">
-      {/* top nav — EVR 구도: 좌 MENU · 중앙 goldentime · 우 ABOUT US/GET STARTED */}
+      {/* persistent MENU fab — 드로어 열림/닫힘 무관 같은 자리. 닫힘=primary·열림=ghost(눌린) */}
+      <button
+        className={`menu-fab${drop ? ' open' : ''}`}
+        aria-expanded={!!drop}
+        onClick={(e) => (drop ? setDrop(null) : launch(e))}
+      >
+        <span className={drop ? 'x' : 'bars'} aria-hidden="true" />
+        {drop ? 'CLOSE' : 'MENU'}
+      </button>
+
+      {/* top nav — EVR 구도: 중앙 goldentime · 우 ABOUT US/GET STARTED */}
       <nav className="gnav">
-        <button className="navpill menu" onClick={launch}><span className="bars" aria-hidden="true" />MENU</button>
         <span className="gnav-brand">goldentime</span>
         <span className="gnav-right">
           <a href="#demo" className="navpill">ABOUT US</a>
-          <Link href="/app" className="navpill fill">GET STARTED</Link>
+          <Link href="/app" className="navpill cta"><span>GET STARTED</span></Link>
         </span>
       </nav>
 
@@ -70,7 +79,6 @@ export default function Landing() {
           <div className="drop-blob b1" aria-hidden="true" />
           <div className="drop-panel" role="dialog" aria-label="메뉴">
             <div className="drop-head">
-              <button className="navpill dark" onClick={() => setDrop(null)}>✕ CLOSE</button>
               <span className="drop-brand">goldentime</span>
             </div>
             <nav className="drop-rows">
