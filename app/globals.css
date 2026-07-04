@@ -121,20 +121,9 @@ details.oneline input { width: 100%; padding: 10px 12px; border: 1px solid var(-
 .ld-io { opacity: 0; transform: translateY(26px); transition: opacity .7s ease, transform .7s cubic-bezier(.4, 0, .2, 1); }
 .ld-io.in { opacity: 1; transform: none; }
 
-/* S1 — fragments scatter as --p grows */
-.ld-s1 { height: 240vh; position: relative; }
-.ld-s1-stick { position: sticky; top: 0; height: 100svh; display: flex; align-items: center; justify-content: center; overflow: clip; }
-.ld-s1 .ld-h2 { position: relative; z-index: 2; text-align: center; opacity: calc((var(--p, 0) - .25) * 2.5); transform: translateY(calc((1 - var(--p, 0)) * 30px)); }
-.ld-frags { position: absolute; inset: 0; z-index: 1; }
-.ld-frag { position: absolute; left: 50%; top: 50%; font-size: clamp(11px, 1.4vw, 14px); color: var(--ink-2); background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px; white-space: nowrap;
-  --spread: calc(var(--p, 0) * (1 + var(--i) * .13));
-  transform: translate(calc(-50% + (var(--i) - 2.5) * 9vw * var(--spread) * .9), calc(-50% + (var(--i) - 2.5) * -7vh * var(--spread) + var(--i) * 26px - 66px)) rotate(calc((var(--i) - 2.5) * var(--p, 0) * 3.2deg));
-  filter: blur(calc(var(--p, 0) * var(--p, 0) * 5px));
-  opacity: calc(1 - var(--p, 0) * .55); }
-
 /* S2 — demo split + wire */
-.ld-s2, .ld-s3, .ld-s4, .ld-s5 { padding: 18vh max(24px, 6vw); max-width: 1120px; margin: 0 auto; }
-.ld-s2 .ld-h2, .ld-s3 .ld-h2, .ld-s4 .ld-h2 { margin-bottom: 44px; }
+.ld-s2, .ld-s3, .ld-s5 { padding: 18vh max(24px, 6vw); max-width: 1120px; margin: 0 auto; }
+.ld-s2 .ld-h2, .ld-s3 .ld-h2 { margin-bottom: 44px; }
 .ld-demo { display: grid; grid-template-columns: 1fr 120px 1fr; align-items: center; gap: 0; }
 .ld-demo-pane { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-card); padding: 18px; font-size: 13.5px; }
 .ld-demo-label { font-size: 11px; color: var(--muted); letter-spacing: .08em; font-weight: 600; margin-bottom: 10px; }
@@ -159,16 +148,6 @@ details.oneline input { width: 100%; padding: 10px 12px; border: 1px solid var(-
 .ld-io.in .ld-chip { opacity: 1; transform: none; }
 .ld-chip:hover { background: color-mix(in srgb, var(--c) 9%, var(--surface)); border-color: var(--c); }
 
-/* S4 — mask flip */
-.ld-trust { display: flex; flex-direction: column; gap: 20px; align-items: flex-start; }
-.ld-mask { font-size: clamp(14px, 2vw, 18px); background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-input); padding: 16px 20px; }
-.ld-mask-flip { display: inline-grid; vertical-align: bottom; }
-.ld-mask-flip span { grid-area: 1/1; transition: opacity .5s ease 1s; }
-.ld-mask-flip span:last-child { opacity: 0; color: var(--ink); }
-.ld-io.in .ld-mask-flip span:first-child { opacity: 0; }
-.ld-io.in .ld-mask-flip span:last-child { opacity: 1; }
-.ld-badges { display: flex; gap: 8px; }
-
 /* S5 */
 .ld-s5 { text-align: center; padding-bottom: 10vh; }
 .ld-s5 .ld-h2 { margin-bottom: 30px; }
@@ -178,14 +157,12 @@ details.oneline input { width: 100%; padding: 10px 12px; border: 1px solid var(-
   .ld-demo { grid-template-columns: 1fr; }
   .ld-wire { width: 60px; height: 44px; margin: -4px auto; transform: rotate(90deg); }
   .ld-group { flex-direction: column; gap: 8px; }
-  .ld-s1 { height: 200vh; }
 }
 @media (prefers-reduced-motion: reduce) {
   .ld-io, .ld-group, .ld-chip { opacity: 1 !important; transform: none !important; transition: none !important; }
   .ld-io.in .ld-wire path { animation: none; stroke-dashoffset: 0; }
   .ld-io.in .ld-wire circle { animation: none; opacity: 1; }
   .ld-scrollcue::after { animation: none; }
-  .ld-frag { filter: none; }
 }
 
 /* ── SpecialtyPicker (accordion) ── */

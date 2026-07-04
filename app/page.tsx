@@ -1,25 +1,14 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import Link from 'next/link';
 import { GROUPS, SPECIALTIES } from '@/lib/specialties';
 import { HeroCanvas } from './components/HeroCanvas';
 
 /* Landing — "종이 위의 시네마" (DESIGN-V3-SPEC). 섹션당 카피 ≤2줄 + 시각 1개.
- * 모션: IO reveal + S1 scroll-progress만. 라이브러리 0. reduced-motion/no-JS 완독 가능. */
-
-const FRAGMENTS = [
-  '[Nursing 18:51] "가슴이 꽉 막힌 느낌" onset 1hr',
-  '[EKG 19:10] sinus tach 102 · nonspecific ST-T',
-  'home meds: warfarin? 당뇨약 — patient unsure',
-  '[Lab 20:46] Troponin-I 2.1 ↑ · INR 1.7',
-  '[ED 19:08] pain 3/10 after rest · allergy n/d',
-  'Cr 1.8 · eGFR 38 · K 5.1 — repeat pending',
-];
+ * 모션: IO reveal만. 라이브러리 0. reduced-motion/no-JS 완독 가능. */
 
 export default function Landing() {
-  const s1ref = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
     // IO reveal (.ld-io → .in)
     const io = new IntersectionObserver(
@@ -27,21 +16,7 @@ export default function Landing() {
       { threshold: 0.35 },
     );
     document.querySelectorAll('.ld-io').forEach((el) => io.observe(el));
-
-    // S1 scroll progress → CSS var --p (fragments scatter+blur)
-    const el = s1ref.current;
-    let raf = 0;
-    const tick = () => {
-      if (el) {
-        const r = el.getBoundingClientRect();
-        const p = Math.min(1, Math.max(0, -r.top / (r.height - innerHeight || 1)));
-        el.style.setProperty('--p', String(p));
-      }
-      raf = requestAnimationFrame(tick);
-    };
-    if (!matchMedia('(prefers-reduced-motion: reduce)').matches) raf = requestAnimationFrame(tick);
-    else el?.style.setProperty('--p', '0.85');
-    return () => { io.disconnect(); cancelAnimationFrame(raf); };
+    return () => io.disconnect();
   }, []);
 
   return (
@@ -55,18 +30,6 @@ export default function Landing() {
           <Link href="/app" className="btn ld-cta">차트 넣어보기 →</Link>
         </div>
         <div className="ld-scrollcue" aria-hidden="true">스크롤</div>
-      </section>
-
-      {/* S1 — 문제: 기록의 부피 (질감으로만) */}
-      <section className="ld-s1" ref={s1ref}>
-        <div className="ld-s1-stick">
-          <div className="ld-frags" aria-hidden="true">
-            {FRAGMENTS.map((f, i) => (
-              <div key={i} className="ld-frag mono" style={{ ['--i' as string]: i } as React.CSSProperties}>{f}</div>
-            ))}
-          </div>
-          <h2 className="ld-h2">3일치 기록,<br />15분의 외래.</h2>
-        </div>
       </section>
 
       {/* S2 — 해법 = 데모: 문장 → 원문 연결선 */}
@@ -107,19 +70,6 @@ export default function Landing() {
               </span>
             </div>
           ))}
-        </div>
-      </section>
-
-      {/* S4 — 신뢰 */}
-      <section className="ld-s4 ld-io">
-        <h2 className="ld-h2">비식별본만 저장.<br />근거 없는 문장은 표시하지 않습니다.</h2>
-        <div className="ld-trust">
-          <div className="ld-mask mono">환자명: <span className="ld-mask-flip"><span>홍길동</span><span>███</span></span> · 등록번호: <span className="ld-mask-flip"><span>00123456</span><span>████████</span></span></div>
-          <div className="ld-badges">
-            <span className="badge explicit">원문</span>
-            <span className="badge derived">추론</span>
-            <span className="badge uncertain">불확실</span>
-          </div>
         </div>
       </section>
 
