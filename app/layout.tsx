@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { IBM_Plex_Sans, IBM_Plex_Sans_KR, IBM_Plex_Mono } from 'next/font/google';
 import './globals.css';
+import { BrandHome } from './components/BrandHome';
 
 // Anti-slop type system: one cohesive IBM Plex family across scripts (technical,
 // medical-serious — not Inter/Roboto, and not the default Pretendard/Noto every
@@ -27,6 +28,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             <feDisplacementMap in="SourceGraphic" in2="map" scale="26" xChannelSelector="R" yChannelSelector="G" />
           </filter>
         </svg>
+        <BrandHome />
         {children}
       </body>
     </html>

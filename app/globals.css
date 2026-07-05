@@ -47,9 +47,14 @@ a { color: inherit; text-decoration: none; }
   .scanline::after { filter: none; }
 }
 
-/* ── Hero nav ── */
+/* ── persistent home-brand (all pages, container-aligned top-left) ── */
+.brandhome { position: fixed; top: 0; left: 0; right: 0; z-index: 60; padding-top: 18px; pointer-events: none; }
+.brandhome-in { max-width: 80rem; margin: 0 auto; padding: 0 clamp(20px,4vw,40px); }
+.brandhome .nav-logo { pointer-events: auto; }
+
+/* ── Hero nav (logo now global; pill/burger align right) ── */
 .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 50; padding-top: 18px; }
-.nav-in { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.nav-in { display: flex; align-items: center; justify-content: flex-end; gap: 16px; }
 .nav-logo { display: inline-flex; align-items: center; gap: 10px; }
 .nav-mark { width: 26px; height: 26px; border-radius: 50%; border: 2px solid #fff; display: grid; place-items: center; }
 .nav-mark i { width: 9px; height: 9px; border-radius: 50%; background: #fff; display: block; }
@@ -72,7 +77,7 @@ a { color: inherit; text-decoration: none; }
 /* ── Hero ── */
 .hero { position: relative; min-height: 100svh; display: flex; overflow: clip; background: var(--bg); }
 .herovid { position: absolute; inset: 0; z-index: 0; overflow: hidden; }
-.herovid-el { width: 100%; height: 100%; object-fit: cover; filter: blur(5px) brightness(.72) saturate(1.25); transform: scale(1.05); }
+.herovid-el { width: 100%; height: 100%; object-fit: cover; object-position: 70% 50%; filter: blur(5px) brightness(.72) saturate(1.25); transform: scale(1.02); }
 /* left-weighted dim: headline side stays legible, EMR chart reads on the right */
 .herovid-dim { position: absolute; inset: 0; background:
   linear-gradient(90deg, rgba(0,0,0,.85) 0%, rgba(0,0,0,.5) 42%, rgba(0,0,0,.08) 100%),

@@ -13,10 +13,7 @@ export function HeroNav() {
   return (
     <header className="nav">
       <div className="wrapx nav-in">
-        <a href="#top" className="nav-logo">
-          <span className="nav-mark" aria-hidden="true"><i /></span>
-          <span className="nav-brand">gatherEMR</span>
-        </a>
+        {/* logo lives in the global <BrandHome/> (persistent across pages) */}
         <nav className="nav-pill" aria-label="주요">
           <a href="#specialties" className="nav-link">25개 분과</a>
           <Link href="/app" className="nav-link nav-cta">시작하기 {ARROW}</Link>
