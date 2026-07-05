@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { SpecialtyPicker, type Picked } from './SpecialtyPicker';
 import { MuxBg } from './MuxBg';
 
@@ -13,6 +13,7 @@ export function StartDrawer() {
   const panelRef = useRef<HTMLDivElement>(null);
   const restoreRef = useRef<HTMLElement | null>(null);
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     const onOpen = (e: Event) => {
@@ -24,9 +25,20 @@ export function StartDrawer() {
       );
       setOpen(true);
     };
+    const onClose = () => setOpen(false);
     window.addEventListener('gemr:open-start', onOpen);
-    return () => window.removeEventListener('gemr:open-start', onOpen);
+    window.addEventListener('gemr:close-start', onClose);
+    return () => {
+      window.removeEventListener('gemr:open-start', onOpen);
+      window.removeEventListener('gemr:close-start', onClose);
+    };
   }, []);
+
+  // the drawer lives in the layout (persists across routes) — close it on any navigation
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setOpen(false);
+  }, [pathname]);
 
   useEffect(() => {
     if (!open) return;
@@ -91,11 +103,6 @@ export function StartDrawer() {
       <span className="startdrawer-blob echo" aria-hidden="true" />
       <span className="startdrawer-blob ink" aria-hidden="true" />
       <div ref={panelRef} className="startdrawer-panel appshell" role="dialog" aria-modal="true" aria-label="분과 선택">
-        <button className="startdrawer-x" onClick={() => setOpen(false)} aria-label="닫기">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-          </svg>
-        </button>
         <div className="startdrawer-in">
           <p className="startdrawer-eyebrow mono">차트 넣어보기</p>
           <h2 className="startdrawer-h2">어느 분과세요?</h2>
