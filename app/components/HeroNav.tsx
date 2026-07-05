@@ -8,6 +8,12 @@ const ARROW = (
   </svg>
 );
 
+function openStart(e: React.MouseEvent) {
+  if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+  e.preventDefault();
+  window.dispatchEvent(new CustomEvent('gemr:open-start'));
+}
+
 export function HeroNav() {
   const [open, setOpen] = useState(false);
   return (
@@ -16,7 +22,8 @@ export function HeroNav() {
         {/* logo lives in the global <BrandHome/> (persistent across pages) */}
         <nav className="nav-pill" aria-label="주요">
           <a href="#specialties" className="nav-link">25개 분과</a>
-          <Link href="/app" className="nav-link nav-cta">시작하기 {ARROW}</Link>
+          <Link href="/about" className="nav-link">About</Link>
+          <a href="/app" className="nav-link nav-cta" onClick={openStart}>시작하기 {ARROW}</a>
         </nav>
         <button className="nav-burger" aria-label="메뉴" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
           <span /><span />
@@ -25,7 +32,8 @@ export function HeroNav() {
       {open && (
         <div className="nav-menu">
           <a href="#specialties" onClick={() => setOpen(false)}>25개 분과</a>
-          <Link href="/app" onClick={() => setOpen(false)}>시작하기 →</Link>
+          <Link href="/about" onClick={() => setOpen(false)}>About</Link>
+          <a href="/app" onClick={(e) => { openStart(e); setOpen(false); }}>시작하기 →</a>
         </div>
       )}
     </header>

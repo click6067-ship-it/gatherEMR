@@ -1,5 +1,5 @@
-import Link from 'next/link';
 import { ShinyText } from './ShinyText';
+import { StartButton } from './StartButton';
 
 const ARROW = (
   <svg className="arw" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -17,7 +17,7 @@ export function HeroCenter() {
       <div className="hero-center">
         <p className="hero-eyebrow mono">교육·연구용 비식별 EMR 요약</p>
         <h1 className="hero-h1">진료차트를 요약하여 분과별 환자의 <ShinyText>핵심만</ShinyText> 파악합니다.</h1>
-        <Link href="/app" className="btn-glass hero-cta">차트 넣어보기 {ARROW}</Link>
+        <StartButton className="btn-glass hero-cta">차트 넣어보기 {ARROW}</StartButton>
       </div>
     </div>
   );
