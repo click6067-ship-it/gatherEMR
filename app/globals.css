@@ -113,7 +113,7 @@ a { color: inherit; text-decoration: none; }
 .startdrawer-panel.appshell { background: transparent; position: absolute; inset: 0; z-index: 3; }
 .startdrawer.open .startdrawer-panel { animation: sdfade .4s .42s ease forwards; }
 @keyframes sdfade { to { opacity: 1; } }
-.startdrawer-x { position: fixed; top: 18px; right: clamp(20px,4vw,40px); z-index: 2;
+.startdrawer-x { position: fixed; top: 72px; right: clamp(20px,4vw,40px); z-index: 2;
   width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; color: var(--txt);
   background: var(--surface-2); border: 1px solid var(--line); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
 .startdrawer-x:hover { color: var(--ink); background: var(--surface-3); }
@@ -159,12 +159,12 @@ a { color: inherit; text-decoration: none; }
 @media (max-width: 720px) { .team-grid { grid-template-columns: 1fr; max-width: 340px; margin: 0 auto; } }
 
 /* ── persistent home-brand (all pages, container-aligned top-left) ── */
-.brandhome { position: fixed; top: 0; left: 0; right: 0; z-index: 60; padding-top: 18px; pointer-events: none; }
+.brandhome { position: fixed; top: 0; left: 0; right: 0; z-index: 110; padding-top: 18px; pointer-events: none; }
 .brandhome-in { max-width: 80rem; margin: 0 auto; padding: 0 clamp(20px,4vw,40px); }
 .brandhome .nav-logo { pointer-events: auto; }
 
 /* ── Hero nav (logo now global; pill/burger align right) ── */
-.nav { position: fixed; top: 0; left: 0; right: 0; z-index: 50; padding-top: 18px; }
+.nav { position: fixed; top: 0; left: 0; right: 0; z-index: 110; padding-top: 18px; }
 .nav-in { display: flex; align-items: center; justify-content: flex-end; gap: 16px; }
 .nav-logo { display: inline-flex; align-items: center; gap: 10px; }
 .nav-mark { width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--ink); display: grid; place-items: center; }
@@ -393,11 +393,9 @@ a { color: inherit; text-decoration: none; }
   -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); transition: background .15s, transform .1s; }
 .theme-toggle:hover { background: var(--surface-3); }
 .theme-toggle:active { transform: scale(.94); }
-/* inline variant — sits inside the landing nav pill with the other buttons */
+/* inline variant — sits inside the global nav pill with the other buttons */
 .theme-toggle.inpill { position: static; top: auto; right: auto; z-index: auto;
   width: 34px; height: 34px; background: transparent; border: 0; color: var(--txt); }
 .theme-toggle.inpill:hover { background: var(--surface); color: var(--ink); }
-/* on the landing the pill carries its own toggle → hide the global fixed one (desktop) */
-@media (min-width: 1024px) { body:has(.landing) .theme-toggle:not(.inpill) { display: none; } }
-/* mobile landing: keep the hamburger clear of the global toggle */
-@media (max-width: 1023px) { .nav-burger { margin-right: 44px; } }
+/* toggle inside the mobile menu */
+.nav-menu-theme { display: flex; justify-content: flex-start; padding: 4px 4px 0; }

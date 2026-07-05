@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { HeroNav } from './components/HeroNav';
 import { HeroCenter } from './components/HeroCenter';
 import { JourneySection } from './components/JourneySection';
 import { FeaturesSection } from './components/FeaturesSection';
@@ -7,7 +6,6 @@ import { SpecialtiesSection } from './components/SpecialtiesSection';
 import { CtaSection } from './components/CtaSection';
 import { SiteFooter } from './components/SiteFooter';
 import { MuxBg } from './components/MuxBg';
-import { StartDrawer } from './components/StartDrawer';
 
 // The Mux clip is the full-page background (hero included); content sits on top, dimmed
 // for legibility. Start CTAs open the fullscreen <StartDrawer/>.
@@ -20,7 +18,6 @@ export default function Landing() {
       </div>
 
       <section className="hero">
-        <HeroNav />
         <HeroCenter />
       </section>
 
@@ -41,8 +38,6 @@ export default function Landing() {
       </section>
 
       <SiteFooter />
-
-      <StartDrawer />
     </main>
   );
 }
