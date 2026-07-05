@@ -170,6 +170,9 @@ a { color: inherit; text-decoration: none; }
 
 /* ── sections (dark) ── */
 .landing > .sec { padding: clamp(40px,8vh,96px) 0; }
+/* rhythm: quiet the fixed video behind the text-heavy specialties (hero + CTA keep it bright).
+   fades at top/bottom edges so it blends into the video-forward sections around it */
+#specialties { background: linear-gradient(180deg, rgba(6,8,15,.5) 0%, rgba(6,8,15,.9) 16%, rgba(6,8,15,.9) 84%, rgba(6,8,15,.5) 100%); }
 .sec-h2 { font-size: clamp(20px,2.6vw,30px); font-weight: 500; line-height: 1.42; letter-spacing: -.02em; color: #fff; margin-bottom: 40px; max-width: 30ch; }
 .grp-list { display: flex; flex-direction: column; gap: 22px; }
 .grp { display: flex; gap: 18px; align-items: baseline; flex-wrap: wrap; }
