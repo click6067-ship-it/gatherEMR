@@ -8,10 +8,19 @@ import { SpecialtyPicker, type Picked } from './SpecialtyPicker';
 // specialty deep-links into /app (?s=&sub=), reusing the app's existing entry flow.
 export function StartDrawer() {
   const [open, setOpen] = useState(false);
+  const [origin, setOrigin] = useState({ x: 0, y: 0 });
   const router = useRouter();
 
   useEffect(() => {
-    const onOpen = () => setOpen(true);
+    const onOpen = (e: Event) => {
+      const d = (e as CustomEvent).detail as { x?: number; y?: number } | undefined;
+      setOrigin(
+        d && typeof d.x === 'number' && typeof d.y === 'number'
+          ? { x: d.x, y: d.y }
+          : { x: window.innerWidth / 2, y: window.innerHeight / 2 },
+      );
+      setOpen(true);
+    };
     window.addEventListener('gemr:open-start', onOpen);
     return () => window.removeEventListener('gemr:open-start', onOpen);
   }, []);
@@ -38,8 +47,14 @@ export function StartDrawer() {
   }
 
   return (
-    <div className={`startdrawer${open ? ' open' : ''}`} aria-hidden={!open}>
+    <div
+      className={`startdrawer${open ? ' open' : ''}`}
+      aria-hidden={!open}
+      style={{ ['--ox' as string]: `${origin.x}px`, ['--oy' as string]: `${origin.y}px` } as React.CSSProperties}
+    >
       <div className="startdrawer-scrim" onClick={() => setOpen(false)} />
+      <span className="startdrawer-blob echo" aria-hidden="true" />
+      <span className="startdrawer-blob ink" aria-hidden="true" />
       <div className="startdrawer-panel appshell" role="dialog" aria-modal="true" aria-label="분과 선택">
         <button className="startdrawer-x" onClick={() => setOpen(false)} aria-label="닫기">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">

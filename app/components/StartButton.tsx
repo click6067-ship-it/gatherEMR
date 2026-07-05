@@ -11,7 +11,10 @@ export function StartButton({ className, children }: { className?: string; child
       onClick={(e) => {
         if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
         e.preventDefault();
-        window.dispatchEvent(new CustomEvent('gemr:open-start'));
+        const r = e.currentTarget.getBoundingClientRect();
+        window.dispatchEvent(
+          new CustomEvent('gemr:open-start', { detail: { x: r.left + r.width / 2, y: r.top + r.height / 2 } }),
+        );
       }}
     >
       {children}
