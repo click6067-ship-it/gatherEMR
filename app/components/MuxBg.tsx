@@ -14,6 +14,9 @@ export function MuxBg({ className }: { className?: string }) {
     const video = ref.current;
     if (!video) return;
 
+    // Respect reduced-motion: don't attach/play the clip — the poster stays as a still.
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
     // Native HLS (Safari / iOS)
     if (video.canPlayType('application/vnd.apple.mpegurl')) {
       video.src = SRC;

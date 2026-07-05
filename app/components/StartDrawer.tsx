@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { SpecialtyPicker, type Picked } from './SpecialtyPicker';
 import { MuxBg } from './MuxBg';
@@ -10,6 +10,8 @@ import { MuxBg } from './MuxBg';
 export function StartDrawer() {
   const [open, setOpen] = useState(false);
   const [origin, setOrigin] = useState({ x: 0, y: 0 });
+  const panelRef = useRef<HTMLDivElement>(null);
+  const restoreRef = useRef<HTMLElement | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -28,8 +30,32 @@ export function StartDrawer() {
 
   useEffect(() => {
     if (!open) return;
+    restoreRef.current = document.activeElement as HTMLElement | null;
+    const focusables = () =>
+      Array.from(
+        panelRef.current?.querySelectorAll<HTMLElement>(
+          'button, a[href], input, [tabindex]:not([tabindex="-1"])',
+        ) ?? [],
+      ).filter((el) => !el.hasAttribute('disabled') && el.getClientRects().length > 0);
+    focusables()[0]?.focus();
+
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setOpen(false);
+      if (e.key === 'Escape') {
+        setOpen(false);
+        return;
+      }
+      if (e.key !== 'Tab') return;
+      const f = focusables();
+      if (!f.length) return;
+      const first = f[0];
+      const last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
     };
     document.addEventListener('keydown', onKey);
     const prev = document.body.style.overflow;
@@ -37,6 +63,7 @@ export function StartDrawer() {
     return () => {
       document.removeEventListener('keydown', onKey);
       document.body.style.overflow = prev;
+      restoreRef.current?.focus?.();
     };
   }, [open]);
 
@@ -51,6 +78,7 @@ export function StartDrawer() {
     <div
       className={`startdrawer${open ? ' open' : ''}`}
       aria-hidden={!open}
+      inert={!open ? true : undefined}
       style={{ ['--ox' as string]: `${origin.x}px`, ['--oy' as string]: `${origin.y}px` } as React.CSSProperties}
     >
       <div className="startdrawer-scrim" onClick={() => setOpen(false)} />
@@ -62,7 +90,7 @@ export function StartDrawer() {
       )}
       <span className="startdrawer-blob echo" aria-hidden="true" />
       <span className="startdrawer-blob ink" aria-hidden="true" />
-      <div className="startdrawer-panel appshell" role="dialog" aria-modal="true" aria-label="분과 선택">
+      <div ref={panelRef} className="startdrawer-panel appshell" role="dialog" aria-modal="true" aria-label="분과 선택">
         <button className="startdrawer-x" onClick={() => setOpen(false)} aria-label="닫기">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
             <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />

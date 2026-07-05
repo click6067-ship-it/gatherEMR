@@ -53,6 +53,9 @@ export default function Home() {
     const sp = SPECIALTIES.find((x) => x.id === sid);
     if (!sp) return;
     const t = sp.subspecialties?.find((u) => u.id === q.get('sub')) ?? null;
+    // one-shot deep-link init from the URL on mount (kept in an effect to avoid an SSR/
+    // hydration mismatch — the server can't read location); batched into a single render.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSpecialty(sp); setSub(t); setPickedLabel(t ? t.name : sp.name); setStage('input');
   }, []);
 
@@ -130,7 +133,7 @@ export default function Home() {
                   accept=".txt,.md,.pdf,.png,.jpg,.jpeg,.webp,.bmp,.tiff,.tif,.heic,.hwp,.hwpx,.docx,.pptx,.xlsx"
                   onChange={(e) => { const f = e.target.files?.[0]; if (f) onFile(f); e.currentTarget.value = ''; }} />
               </label>
-              <span style={{ fontSize: 12, color: 'var(--muted)' }}>PDF · 이미지 · HWP · DOCX — 또는 아래에 붙여넣기</span>
+              <span style={{ fontSize: 12, color: 'var(--txt-dim)' }}>PDF · 이미지 · HWP · DOCX — 또는 아래에 붙여넣기</span>
             </div>
             <textarea className="ta mono" value={text} onChange={(e) => setText(e.target.value)} placeholder="EMR 케이스 텍스트를 붙여넣거나, 위에서 파일을 첨부하세요 (추출된 텍스트가 여기 표시됩니다)" />
             <div className="chips">

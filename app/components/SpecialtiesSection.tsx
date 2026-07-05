@@ -12,7 +12,7 @@ export function SpecialtiesSection() {
               <span className="grp-name">{gr.label}</span>
               <span className="grp-chips">
                 {SPECIALTIES.filter((s) => s.group === gr.id).map((s) => (
-                  <Link key={s.id} href="/app" className="grp-chip">{s.name}</Link>
+                  <Link key={s.id} href={`/app?s=${s.id}`} className="grp-chip">{s.name}</Link>
                 ))}
               </span>
             </div>
