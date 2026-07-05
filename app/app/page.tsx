@@ -90,25 +90,42 @@ export default function Home() {
     const MAX_UPLOAD = 4 * 1024 * 1024; // Vercel caps the request body at ~4.5MB
     const isPdf = f.type === 'application/pdf' || /\.pdf$/i.test(f.name);
 
-    // Too big to upload → try to read the PDF's text layer in the browser (no upload).
+    // Too big for a direct upload (Vercel ~4.5MB body limit).
     if (f.size > MAX_UPLOAD) {
-      if (isPdf) {
-        setExtracting(true);
-        try {
+      setExtracting(true);
+      try {
+        // 1) text-layer PDFs: read in the browser, no upload at all
+        if (isPdf) {
           const { extractText, getDocumentProxy } = await import('unpdf');
           const pdf = await getDocumentProxy(new Uint8Array(await f.arrayBuffer()));
           const { text } = await extractText(pdf, { mergePages: true });
           const t = (text ?? '').trim();
           if (t) { setText(t); return; }
-          setErr('이 PDF는 용량이 크고 스캔(이미지)으로만 되어 있어 브라우저에서 읽을 수 없어요. 텍스트를 붙여넣거나, 페이지를 나눠 4MB 이하로 올려 주세요.');
-        } catch (e) {
-          setErr(/password|encrypt/i.test((e as Error).message)
-            ? '암호가 걸린 PDF는 열 수 없어요. 암호를 풀고 다시 올리거나 텍스트를 붙여넣어 주세요.'
-            : '큰 PDF를 읽지 못했어요. 텍스트를 직접 붙여넣어 주세요.');
-        } finally { setExtracting(false); }
-        return;
-      }
-      setErr('파일이 너무 커요 (약 4MB까지 업로드 가능). 텍스트를 복사해 아래에 붙여넣어 주세요.');
+        }
+        // 2) scanned PDF / big image → put it in Blob, server OCRs it, then deletes it
+        const { upload } = await import('@vercel/blob/client');
+        const ext = f.name.split('.').pop()?.toLowerCase() || 'bin';
+        const blob = await upload(`uploads/${Date.now()}.${ext}`, f, {
+          access: 'public',
+          handleUploadUrl: '/api/blob-upload',
+          contentType: f.type || undefined,
+        });
+        const r = await fetch('/api/extract-blob', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url: blob.url, filename: f.name, contentType: f.type }),
+        });
+        const rawBody = await r.text();
+        let j: { text?: string; error?: string } = {};
+        try { j = JSON.parse(rawBody); } catch { /* non-JSON */ }
+        if (!r.ok) throw new Error(j.error ?? '큰 파일을 처리하지 못했어요. 텍스트를 붙여넣어 주세요.');
+        if (!j.text) throw new Error('스캔 파일에서 텍스트를 추출하지 못했어요. 텍스트를 붙여넣어 주세요.');
+        setText(j.text);
+      } catch (e) {
+        setErr(/password|encrypt/i.test((e as Error).message)
+          ? '암호가 걸린 PDF는 열 수 없어요. 암호를 풀고 다시 올리거나 텍스트를 붙여넣어 주세요.'
+          : (e as Error).message || '큰 파일을 처리하지 못했어요. 텍스트를 붙여넣어 주세요.');
+      } finally { setExtracting(false); }
       return;
     }
 
