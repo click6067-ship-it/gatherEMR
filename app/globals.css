@@ -75,8 +75,12 @@ a { color: inherit; text-decoration: none; }
 .startdrawer-scrim { position: absolute; inset: 0; z-index: 0; background: rgba(0,0,0,.4); opacity: 0;
   transition: opacity .5s ease; }
 .startdrawer.open .startdrawer-scrim { opacity: 1; }
-/* circular ink spread from the click point — paint-blob expands to fill (물방울 런처) */
-.startdrawer-blob { position: fixed; left: var(--ox,50%); top: var(--oy,50%); z-index: 1;
+/* video background — revealed after the paint spread fades */
+.startdrawer-bg { position: absolute; inset: 0; z-index: 1; overflow: hidden; }
+.startdrawer-video { width: 100%; height: 100%; object-fit: cover; }
+.startdrawer-bgdim { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(6,8,15,.74), rgba(6,8,15,.84)); }
+/* circular ink spread from the click point — paint-blob expands to fill, then fades to reveal the video (물방울 런처) */
+.startdrawer-blob { position: fixed; left: var(--ox,50%); top: var(--oy,50%); z-index: 2;
   width: 64px; height: 64px; margin: -32px 0 0 -32px; border-radius: 50%; transform: scale(0); pointer-events: none; }
 .startdrawer-blob.ink { background: var(--void); }
 /* echo LEADS as a bright blue-white wave so the spread is clearly visible;
@@ -84,8 +88,8 @@ a { color: inherit; text-decoration: none; }
 .startdrawer-blob.echo { background: radial-gradient(circle, rgba(188,220,255,.92), rgba(116,173,255,.55) 72%); }
 .startdrawer.open .startdrawer-blob { animation: dropexpand .9s cubic-bezier(.5,.08,.24,1) forwards; }
 .startdrawer.open .startdrawer-blob.ink { animation-delay: .09s; }
-@keyframes dropexpand { to { transform: scale(85); border-radius: 50%; } }
-.startdrawer-panel { position: absolute; inset: 0; z-index: 2; overflow-y: auto; opacity: 0; transition: opacity .28s ease; }
+@keyframes dropexpand { 0% { transform: scale(0); opacity: 1; } 58% { transform: scale(85); opacity: 1; } 100% { transform: scale(85); opacity: 0; } }
+.startdrawer-panel { position: absolute; inset: 0; z-index: 3; overflow-y: auto; opacity: 0; transition: opacity .28s ease; }
 .startdrawer-panel.appshell { background: transparent; }
 .startdrawer.open .startdrawer-panel { animation: sdfade .4s .42s ease forwards; }
 @keyframes sdfade { to { opacity: 1; } }
@@ -98,7 +102,7 @@ a { color: inherit; text-decoration: none; }
 .startdrawer-h2 { font-size: clamp(28px,4.5vw,44px); font-weight: 600; letter-spacing: -.03em; color: #fff; margin-bottom: 8px; }
 .startdrawer-sub { color: var(--txt); font-size: 15px; margin-bottom: 30px; }
 @media (prefers-reduced-motion: reduce) {
-  .startdrawer.open .startdrawer-blob { animation: none; transform: scale(85); }
+  .startdrawer.open .startdrawer-blob { animation: none; opacity: 0; }
   .startdrawer.open .startdrawer-panel { animation: none; opacity: 1; }
 }
 

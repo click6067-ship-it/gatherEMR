@@ -11,7 +11,7 @@ export function HeroCenter() {
   return (
     <div className="wrapx hero-in">
       <div className="hero-top">
-        <p className="hero-lead">긴 응급 차트에서, 당신 분과가 가장 먼저 봐야 할 것만 — 근거 인용과 함께 남깁니다.</p>
+        <p className="hero-lead">EMR차트에서, 당신 분과가 가장 먼저 봐야 할 것만 — 근거 인용과 함께 남깁니다.</p>
         <p className="hero-stat">4,200자 → 핵심 12문장 · 근거 없는 문장 0</p>
       </div>
       <div className="hero-center">

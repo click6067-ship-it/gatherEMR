@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { SpecialtyPicker, type Picked } from './SpecialtyPicker';
+import { MuxBg } from './MuxBg';
 
 // Fullscreen "start" drawer: opened by any StartButton / nav CTA (via the gemr:open-start
 // event), spreads open to fill the screen and shows the specialty picker. Choosing a
@@ -53,6 +54,12 @@ export function StartDrawer() {
       style={{ ['--ox' as string]: `${origin.x}px`, ['--oy' as string]: `${origin.y}px` } as React.CSSProperties}
     >
       <div className="startdrawer-scrim" onClick={() => setOpen(false)} />
+      {open && (
+        <div className="startdrawer-bg" aria-hidden="true">
+          <MuxBg className="startdrawer-video" />
+          <div className="startdrawer-bgdim" />
+        </div>
+      )}
       <span className="startdrawer-blob echo" aria-hidden="true" />
       <span className="startdrawer-blob ink" aria-hidden="true" />
       <div className="startdrawer-panel appshell" role="dialog" aria-modal="true" aria-label="분과 선택">
