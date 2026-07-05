@@ -14,7 +14,6 @@ export function BrandHome() {
           aria-label="gatherEMR 홈"
           onClick={() => window.dispatchEvent(new CustomEvent('gemr:close-start'))}
         >
-          <span className="nav-mark" aria-hidden="true"><i /></span>
           <span className="nav-brand">gatherEMR</span>
         </Link>
       </div>
