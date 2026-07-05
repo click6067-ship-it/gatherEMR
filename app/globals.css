@@ -393,5 +393,11 @@ a { color: inherit; text-decoration: none; }
   -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); transition: background .15s, transform .1s; }
 .theme-toggle:hover { background: var(--surface-3); }
 .theme-toggle:active { transform: scale(.94); }
-/* keep the landing nav pill clear of the toggle */
-.nav .nav-in { padding-right: 52px; }
+/* inline variant — sits inside the landing nav pill with the other buttons */
+.theme-toggle.inpill { position: static; top: auto; right: auto; z-index: auto;
+  width: 34px; height: 34px; background: transparent; border: 0; color: var(--txt); }
+.theme-toggle.inpill:hover { background: var(--surface); color: var(--ink); }
+/* on the landing the pill carries its own toggle → hide the global fixed one (desktop) */
+@media (min-width: 1024px) { body:has(.landing) .theme-toggle:not(.inpill) { display: none; } }
+/* mobile landing: keep the hamburger clear of the global toggle */
+@media (max-width: 1023px) { .nav-burger { margin-right: 44px; } }

@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import Link from 'next/link';
+import { ThemeToggle } from './ThemeToggle';
 
 const ARROW = (
   <svg className="arw" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -27,6 +28,7 @@ export function HeroNav() {
           <a href="#specialties" className="nav-link">25개 분과</a>
           <Link href="/about" className="nav-link">About us</Link>
           <a href="/app" className="nav-link nav-cta" onClick={openStart}>시작하기 {ARROW}</a>
+          <ThemeToggle inpill />
         </nav>
         <button className="nav-burger" aria-label="메뉴" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
           <span /><span />

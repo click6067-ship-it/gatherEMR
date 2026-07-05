@@ -17,7 +17,7 @@ const MOON = (
   </svg>
 );
 
-export function ThemeToggle() {
+export function ThemeToggle({ inpill = false }: { inpill?: boolean }) {
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
 
   useEffect(() => {
@@ -39,7 +39,7 @@ export function ThemeToggle() {
 
   return (
     <button
-      className="theme-toggle"
+      className={`theme-toggle${inpill ? ' inpill' : ''}`}
       onClick={toggle}
       aria-label={theme === 'dark' ? '라이트 모드로 전환' : '다크 모드로 전환'}
       title="테마 전환"
