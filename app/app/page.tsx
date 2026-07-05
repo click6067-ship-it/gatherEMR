@@ -211,10 +211,10 @@ export default function Home() {
             onDrop={onDropFile}
           >
             {dragOver && !extracting && <div className="drop-hint" aria-hidden="true">여기에 파일을 놓으세요</div>}
-            {extracting && (
+            {(extracting || busy) && (
               <div className="loading-hint" aria-live="polite">
                 <span className="dots" aria-hidden="true"><i /><i /><i /></span>
-                <span className="loading-label">차트를 읽는 중…</span>
+                <span className="loading-label">{extracting ? '차트를 읽는 중…' : '비식별 확인 중…'}</span>
               </div>
             )}
             <button className="back" onClick={() => setStage('pick')}>← 분과 선택</button>
@@ -243,7 +243,7 @@ export default function Home() {
               <span>비식별 교육·연구용 케이스이며, 비식별본 저장에 동의합니다.</span>
             </label>
             <div className="row">
-              <button className="btn" disabled={busy || !text.trim() || !consent} onClick={preview}>{busy ? '처리 중…' : '비식별 확인 →'}</button>
+              <button className="btn" disabled={busy || !text.trim() || !consent} onClick={preview}>{busy ? <span className="dots" aria-hidden="true"><i /><i /><i /></span> : '비식별 확인 →'}</button>
               <button className="btn ghost" onClick={() => setText(SAMPLE)}>샘플 채우기</button>
             </div>
           </section>
@@ -251,13 +251,19 @@ export default function Home() {
 
         {stage === 'preview' && (
           <section className="step panel sheet reveal">
+            {busy && (
+              <div className="loading-hint" aria-live="polite">
+                <span className="dots" aria-hidden="true"><i /><i /><i /></span>
+                <span className="loading-label">{chosenName} 요약 생성 중… (~20초)</span>
+              </div>
+            )}
             <button className="back" onClick={() => setStage('input')}>← 수정</button>
             <h1 className="q ink play">전송 전 비식별 확인</h1>
             <p className="sub">식별자 후보 <b>{idCount}</b>건을 <span className="mono">███</span>로 가리고 날짜를 시프트했습니다. 남은 식별정보가 없는지 확인 후 요약하세요. (OpenAI엔 이 비식별본만 전송됩니다.)</p>
             <ChartLens text={masked} className="preview-box" />
             <p className="hint-lens">커서로 훑어 남은 식별정보를 확인하세요.</p>
             <div className="row" style={{ marginTop: 14 }}>
-              <button className="btn" disabled={busy} onClick={run}>{busy ? `${chosenName} 요약 중… (~20s)` : `확인했습니다 · ${chosenName} 요약 →`}</button>
+              <button className="btn" disabled={busy} onClick={run}>{busy ? <span className="dots" aria-hidden="true"><i /><i /><i /></span> : `확인했습니다 · ${chosenName} 요약 →`}</button>
             </div>
           </section>
         )}
