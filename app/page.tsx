@@ -1,5 +1,8 @@
+import Link from 'next/link';
 import { HeroNav } from './components/HeroNav';
 import { HeroCenter } from './components/HeroCenter';
+import { JourneySection } from './components/JourneySection';
+import { FeaturesSection } from './components/FeaturesSection';
 import { SpecialtiesSection } from './components/SpecialtiesSection';
 import { CtaSection } from './components/CtaSection';
 import { SiteFooter } from './components/SiteFooter';
@@ -22,9 +25,21 @@ export default function Landing() {
       </section>
 
       <hr className="scanline" />
+      <JourneySection />
+      <hr className="scanline" />
+      <FeaturesSection />
+      <hr className="scanline" />
       <SpecialtiesSection />
       <hr className="scanline" />
       <CtaSection />
+
+      <section className="sec team-teaser">
+        <div className="wrapx reveal">
+          <p className="team-teaser-lead">현장·데이터·UX·AI가 한 팀. <b>골든타임 팀</b>이 만들었습니다.</p>
+          <Link href="/about" className="btn-glass">팀원 소개 →</Link>
+        </div>
+      </section>
+
       <SiteFooter />
 
       <StartDrawer />
