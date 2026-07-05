@@ -55,6 +55,18 @@ describe('de-id — codex-review regressions', () => {
     expect(masked).not.toContain('00123456');
   });
 
+  it('detects 주소(address) and 피보험자(insured) — labelled and bare address', () => {
+    const t = '주소: 서울특별시 강남구 테헤란로 123  피보험자: 김보험  피보험자번호: 12-345678\n경기도 성남시 분당구 정자로 45번지';
+    const ids = detect(t);
+    expect(ids.some((i) => i.kind === 'insured' && i.text === '김보험')).toBe(true);
+    expect(ids.some((i) => i.kind === 'insured' && i.text.includes('12-345678'))).toBe(true);
+    expect(ids.some((i) => i.kind === 'address')).toBe(true);
+    const { masked } = mask(t, ids, { shiftDays: 0 });
+    expect(masked).not.toContain('테헤란로');
+    expect(masked).not.toContain('김보험');
+    expect(masked).not.toContain('정자로');
+  });
+
   it('masks an invalid calendar date as a block instead of shifting to a wrong date', () => {
     const t = 'admit 2026-02-31';
     const { masked } = mask(t, detect(t), { shiftDays: 0 });
