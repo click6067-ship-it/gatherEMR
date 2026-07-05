@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { SPECIALTIES, type Specialty, type Template } from '@/lib/specialties';
 import { SpecialtyPicker, type Picked } from '../components/SpecialtyPicker';
 import { ChartLens } from '../components/ChartLens';
+import { MuxBg } from '../components/MuxBg';
 import { getSessionId } from '@/lib/session';
 import type { ResolvedItem, ResolvedSummary } from '@/lib/summary/summarize';
 
@@ -102,6 +103,10 @@ export default function Home() {
 
   return (
     <main className="appshell">
+      <div className="appshell-bg" aria-hidden="true">
+        <MuxBg className="appshell-video" />
+        <div className="appshell-bgdim" />
+      </div>
       <div className="wrap">
         {err && <div className="alert">⚠ {err}</div>}
 
