@@ -279,6 +279,12 @@ a { color: inherit; text-decoration: none; }
 .appshell .hint-lens { font-size: 12px; color: var(--txt-dim); margin-top: 8px; }
 .appshell details.oneline summary { cursor: pointer; color: var(--arc); font-size: 13px; margin: 8px 0; }
 .appshell details.oneline input { width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; font-size: 13px; background: rgba(255,255,255,.05); color: #fff; }
+/* input-stage copy + always-visible custom focus */
+.appshell .input-note { font-size: 12.5px; color: var(--txt-dim); margin: 10px 0 0; }
+.appshell .focus-lead { font-size: 13px; color: var(--txt); margin: 18px 0 10px; line-height: 1.5; }
+.appshell .focus-lead .focus-opt { color: var(--txt-dim); }
+.appshell .focus-input { width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; font-size: 13px; background: rgba(255,255,255,.05); color: #fff; margin-top: 10px; }
+.appshell .focus-input:focus { outline: none; border-color: var(--arc); }
 @media (max-width: 760px) { .appshell .split { grid-template-columns: 1fr; } .appshell .pane.right { position: static; } }
 
 /* ── /app ChartLens reading-lens (dark) + preview padding ── */

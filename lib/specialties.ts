@@ -4,13 +4,14 @@
 // EVERY specialty works (no EM hardcoding). Universal spine lives in schema.ts;
 // each template injects the specialty lens.
 
-export type GroupId = 'internal' | 'surgical' | 'diagnostic' | 'emergency';
+export type GroupId = 'internal' | 'surgical' | 'diagnostic' | 'emergency' | 'social';
 
 export const GROUPS: { id: GroupId; label: string; color: string; soft: string }[] = [
   { id: 'internal', label: '내과·진료계열', color: '#2563eb', soft: '#eff4ff' },
   { id: 'surgical', label: '외과·수술계열', color: '#dc2626', soft: '#fef2f2' },
   { id: 'diagnostic', label: '진단·지원계열', color: '#7c3aed', soft: '#f5f3ff' },
-  { id: 'emergency', label: '응급·사회의학계열', color: '#059669', soft: '#ecfdf5' },
+  { id: 'emergency', label: '응급의학계열', color: '#059669', soft: '#ecfdf5' },
+  { id: 'social', label: '사회의학계열', color: '#0d9488', soft: '#f0fdfa' },
 ];
 
 /** A summary template = the lens for one specialty or subspecialty. */
@@ -213,14 +214,14 @@ export const SPECIALTIES: Specialty[] = [
     chips: ['중증도·활력징후 추이', '대기 중인 검사·컨설트', '감별진단·Cannot-miss 체크', '인계용 한 줄(I-PASS)'],
   },
   {
-    id: 'preventive-medicine', name: '예방의학과', group: 'emergency',
+    id: 'preventive-medicine', name: '예방의학과', group: 'social',
     lens: ['건강검진 회차별 추이(혈압·혈당·지질·BMI·흡연/음주)', '가족력·기저 만성질환(심뇌혈관 위험)', '(감염관리) 침습기구 삽입기간·배양·항생제', '(역학조사) 증상 발생시점·여행/접촉력', '권고 스크리닝·예방접종 이행'],
     blocks: ['위험요인 프로파일(대사/심혈관 추이)', '스크리닝·예방접종 이행(다음 예정일)', '가족력·생활습관', '감염 노출·처치 타임라인(device-day)', '증상-노출 타임라인(case definition)', '배양/미생물·항생제 이력'],
     cannotMiss: ['권고 스크리닝 미수검 누락', '기구 관련 감염 surveillance 기준일수 초과', '역학조사 필수항목(증상 발현일·접촉일) 누락'],
     chips: ['위험요인 추이만', '스크리닝·예방접종 이행', '감염 노출·처치 타임라인', '역학조사용 증상-접촉 타임라인'],
   },
   {
-    id: 'occupational-medicine', name: '직업환경의학과', group: 'emergency',
+    id: 'occupational-medicine', name: '직업환경의학과', group: 'social',
     lens: ['직업력 전체(최장 근무 + 현재 job·구체 업무)', '유해인자별 노출력(수준·기간·형태·보호구)', '증상-노출 시간관계(근무 중/후·휴가 시 호전)', '특수건강진단 추이(유소견·생물학적 모니터링)', '비직업성 기저질환(감별)'],
     blocks: ['노출력(유해인자별 기간·강도·보호구)', '직업력 타임라인(현직+과거)', '특수건강진단 추이', '증상-노출 시간관계(근무일 vs 휴일)', '업무적합성용 기능상태', '판정 이력(작업가능/조건부/작업불가)'],
     cannotMiss: ['노출-질환 잠복기 불일치 미확인', '업무적합성 판정용 최신 직무기술서 누락', '인과성(산재) 판단용 노출 정량 누락'],

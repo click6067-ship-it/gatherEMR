@@ -41,7 +41,7 @@ export default function About() {
           진료차트에서 <ShinyText>핵심만</ShinyText>, 근거와 함께.
         </h1>
         <p className="about-lead">
-          gatherEMR은 의대 교수·전공의의 교육과 연구를 위해, 길고 복잡한 응급 EMR 차트를 분과 관점으로
+          gatherEMR은 의대 교수·전공의의 교육과 연구를 위해, 길고 복잡한 EMR 차트를 분과 관점으로
           요약하는 도구입니다. 비식별을 전제로, 요약의 모든 문장을 원문 근거에 묶어 신뢰할 수 있게 만듭니다.
         </p>
         <div className="about-grid">
@@ -77,7 +77,6 @@ export default function About() {
             gatherEMR은 한 명의 아이디어가 아니라,<br />
             의료 현장과 기술 구현이 연결된 팀 프로젝트입니다.
           </p>
-          <p className="team-note">FIN:NECT Challenge · 경상권 지역예선 · AI 분야</p>
         </section>
 
         <div className="about-cta">

@@ -125,10 +125,10 @@ export default function Home() {
           <section className="step panel sheet reveal">
             <button className="back" onClick={() => setStage('pick')}>← 분과 선택</button>
             <h1 className="q ink play">차트를 붙여넣으세요</h1>
-            <p className="sub"><b>{chosenName}</b> 관점으로 요약합니다. 식별정보는 다음 단계에서 가립니다.</p>
-            <div className="row" style={{ marginBottom: 8 }}>
+            <p className="sub"><b>{chosenName}</b> 관점으로 요약합니다. 실제 환자 차트 대신 가상(합성) 차트를 넣어 주세요 — 식별정보는 다음 단계에서 가립니다.</p>
+            <div className="row" style={{ marginBottom: 8, justifyContent: 'center' }}>
               <label className="btn ghost" style={{ cursor: extracting ? 'default' : 'pointer', opacity: extracting ? 0.6 : 1 }}>
-                {extracting ? '추출 중…' : '📎 파일 첨부'}
+                {extracting ? '추출 중…' : '파일 첨부'}
                 <input type="file" hidden disabled={extracting}
                   accept=".txt,.md,.pdf,.png,.jpg,.jpeg,.webp,.bmp,.tiff,.tif,.heic,.hwp,.hwpx,.docx,.pptx,.xlsx"
                   onChange={(e) => { const f = e.target.files?.[0]; if (f) onFile(f); e.currentTarget.value = ''; }} />
@@ -136,15 +136,14 @@ export default function Home() {
               <span style={{ fontSize: 12, color: 'var(--txt-dim)' }}>PDF · 이미지 · HWP · DOCX — 또는 아래에 붙여넣기</span>
             </div>
             <textarea className="ta mono" value={text} onChange={(e) => setText(e.target.value)} placeholder="EMR 케이스 텍스트를 붙여넣거나, 위에서 파일을 첨부하세요 (추출된 텍스트가 여기 표시됩니다)" />
+            <p className="input-note">봐야 하는 차트가 길고 많을수록 필요할 거예요.</p>
+            <p className="focus-lead">분과만 골라도 자동으로 요약돼요. 더 보고 싶은 게 있으면 아래에서 고르거나 직접 적어 주세요 <span className="focus-opt">(선택)</span></p>
             <div className="chips">
               {template.chips.map((c) => (
                 <button key={c} className={`chip${focus === c ? ' on' : ''}`} onClick={() => setFocus(focus === c ? '' : c)}>{c}</button>
               ))}
             </div>
-            <details className="oneline">
-              <summary>직접 입력 (선택)</summary>
-              <input value={focus} onChange={(e) => setFocus(e.target.value)} placeholder="예: 이번 입원 신장기능 변화 중심으로" />
-            </details>
+            <input className="focus-input" value={focus} onChange={(e) => setFocus(e.target.value)} placeholder="직접 적기 — 예: 신장기능 추이 · 항생제 반응 · 수술 전 출혈 위험 · 최근 영상 변화 · 통증 조절 경과" />
             <label className="consent">
               <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} />
               <span>비식별 교육·연구용 케이스이며, 비식별본 저장에 동의합니다.</span>
