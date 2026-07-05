@@ -1,0 +1,377 @@
+{
+  "id": "sample-cirrhosis",
+  "title": "간경변·패혈증 20일 ICU 케이스 (MIMIC-IV Demo, 합성)",
+  "specialtyId": "internal-medicine",
+  "subId": "gi",
+  "chosenName": "소화기내과",
+  "idCount": 253,
+  "masked": "==============================================================================\nDE-IDENTIFIED CLINICAL CHART  (source: MIMIC-IV Demo 2.2, subject_id 10007818)\n합성/비식별 환자 차트 — gatherEMR 테스트용. 실제 환자 아님.\n==============================================================================\n\n[ PATIENT ]\n  Sex: M   Age (anchor): 69   Anchor year grp: 2014 - 2016\n  Deceased: 2146-07-14\n\n[ ADMISSION ]\n  Admit:     2146-06-12 16:37:00   Type: DIRECT EMER.\n  Discharge: 2146-07-14 00:00:00   Disposition: DIED\n  From: PHYSICIAN REFERRAL   Insurance: Medicare\n  Death time: 2146-07-14 20:50:00\n  LOS(hosp): 31 days\n  ICU: Medical Intensive Care Unit (MICU)  in 2146-06-24 11:46:29 -> out 2146-07-15 00:27:47  (LOS 20.5 d)\n\n[ DIAGNOSES (ICD, sequence order) ]\n  # 1  Other cirrhosis of liver\n  # 2  Hepatorenal syndrome\n  # 3  Acute respiratory failure, unspecified whether with hypoxia or hypercapnia\n  # 4  Sepsis due to Escherichia coli [E. coli]\n  # 5  Acute kidney failure, unspecified\n  # 6  Hemoperitoneum\n  # 7  Hypovolemic shock\n  # 8  Severe sepsis with septic shock\n  # 9  Peritonitis, unspecified\n  #10  Chronic kidney disease, stage 3 (moderate)\n  #11  Unspecified severe protein-calorie malnutrition\n  #12  Acute and subacute hepatic failure with coma\n  #13  Other postprocedural shock, initial encounter\n  #14  Acute and subacute hepatic failure without coma\n  #15  Acquired coagulation factor deficiency\n  #16  Ventilator associated pneumonia\n  #17  Other ascites\n  #18  Acute posthemorrhagic anemia\n  #19  Unspecified atrial flutter\n  #20  Portal hypertension\n  #21  Hypo-osmolality and hyponatremia\n  #22  Urinary tract infection, site not specified\n  #23  Ileus, unspecified\n  #24  Acidosis\n  #25  Atelectasis\n  #26  Postprocedural hemorrhage of a circulatory system organ or structure following a cardiac catheterization\n  #27  Unspecified infection due to central venous catheter, initial encounter\n  #28  Nonalcoholic steatohepatitis (NASH)\n  #29  Hypertensive chronic kidney disease with stage 1 through stage 4 chronic kidney disease, or unspecified chronic kidney disease\n  #30  Anemia in other chronic diseases classified elsewhere\n  #31  Atherosclerotic heart disease of native coronary artery with other forms of angina pectoris\n  #32  Presence of coronary angioplasty implant and graft\n  #33  Type 2 diabetes mellitus without complications\n  #34  Long term (current) use of insulin\n  #35  Adult failure to thrive\n  #36  Unspecified atrial fibrillation\n  #37  Other specified bacterial agents as the cause of diseases classified elsewhere\n  #38  Methicillin susceptible Staphylococcus aureus infection as the cause of diseases classified elsewhere\n  #39  Other medical procedures as the cause of abnormal reaction of the patient, or of later complication, without mention of misadventure at the time of the procedure\n\n[ PROCEDURES ]\n  2146-06-13  Introduction of Nutritional Substance into Upper GI, Via Natural or Artificial Opening\n  2146-06-13  Drainage of Peritoneal Cavity, Percutaneous Approach\n  2146-06-15  Drainage of Peritoneal Cavity, Percutaneous Approach\n  2146-06-21  Drainage of Peritoneal Cavity, Percutaneous Approach, Diagnostic\n  2146-06-22  Insertion of Infusion Device into Right Atrium, Percutaneous Approach\n  2146-06-22  Fluoroscopy of Right Heart using Other Contrast\n  2146-06-23  Fluoroscopy of Multiple Coronary Arteries using Other Contrast\n  2146-06-23  Performance of Urinary Filtration, Multiple\n  2146-06-24  Insertion of Endotracheal Airway into Trachea, Via Natural or Artificial Opening\n  2146-06-24  Insertion of Infusion Device into Superior Vena Cava, Percutaneous Approach\n  2146-06-24  Fluoroscopy of Superior Vena Cava using Other Contrast, Guidance\n  2146-06-24  Occlusion of Right Femoral Artery with Intraluminal Device, Percutaneous Approach\n  2146-06-24  Respiratory Ventilation, Greater than 96 Consecutive Hours\n  2146-06-25  Occlusion of Right Vertebral Artery with Intraluminal Device, Percutaneous Approach\n  2146-07-01  Extirpation of Matter from Lung Lingula, Via Natural or Artificial Opening Endoscopic\n  2146-07-01  Extirpation of Matter from Left Main Bronchus, Via Natural or Artificial Opening Endoscopic\n  2146-07-01  Extirpation of Matter from Left Lower Lung Lobe, Via Natural or Artificial Opening Endoscopic\n  2146-07-04  Drainage of Peritoneal Cavity, Percutaneous Approach, Diagnostic\n  2146-07-05  Drainage of Right Lower Lobe Bronchus, Via Natural or Artificial Opening Endoscopic, Diagnostic\n  2146-07-09  Introduction of Nutritional Substance into Central Vein, Percutaneous Approach\n  2146-07-09  Extirpation of Matter from Left Lower Lung Lobe, Via Natural or Artificial Opening Endoscopic\n  2146-07-11  Extirpation of Matter from Left Lower Lung Lobe, Via Natural or Artificial Opening Endoscopic\n  2146-07-12  Extirpation of Matter from Left Main Bronchus, Via Natural or Artificial Opening Endoscopic\n\n[ KEY LABS — trend over stay ]\n  Analyte                        first      last      min      max  n   unit\n  Creatinine                      2.40      2.40     1.50     4.50  58   \n  Urea Nitrogen                  68.00     49.00    32.00   205.00  57   \n  Sodium                        125.00    132.00   124.00   141.00  62   \n  Potassium                       5.20      3.80     3.00     5.20  62   \n  Chloride                       93.00     92.00    88.00   105.00  62   \n  Bicarbonate                    21.00     20.00     8.00    26.00  62   \n  Anion Gap                      16.00     24.00    13.00    40.00  62   \n  Glucose                       230.00    317.00    76.00   339.00  64   \n  Calcium, Total                  9.60      8.80     7.90    10.80  55   \n  Magnesium                       2.10      2.70     1.70     2.80  56   \n  Phosphate                       3.60      3.60     1.40    11.70  56   \n  White Blood Cells               8.60     12.20     5.50    27.40  60   \n  Hemoglobin                     11.70     10.10     3.90    11.70  64   \n  Hematocrit                     35.60     36.00    13.00    37.40  64   \n  Platelet Count                177.00     72.00    34.00   394.00  61   \n  INR(PT)                         1.30      1.90     1.30     2.90  48   \n  PT                             14.30     20.90    14.30    32.60  48   \n  PTT                            38.50     40.30    30.70   150.00  43   \n  Bilirubin, Total                1.20     34.50     1.10    35.90  39   \n  Alanine Aminotransferase       22.00     29.00     9.00   432.00  39   \n  Asparate Aminotransferase      45.00    121.00    25.00  1833.00  39   \n  Alkaline Phosphatase           84.00    105.00    30.00   131.00  39   \n  Albumin                         3.60      3.60     2.50     5.00  16   \n  Lactate                         7.30      2.20     1.40    13.20  26   \n  pH                              5.50      7.42     5.50     7.53  47   \n  pO2                            26.00     95.00    25.00   433.00  42   \n  pCO2                           46.00     32.00    26.00    50.00  42   \n  Base Excess                   -14.00     -2.00   -25.00     2.00  42   \n  Lactate Dehydrogenase (LD     135.00    344.00   106.00  1494.00  10   \n\n[ MICROBIOLOGY ]\n  2146-06-14 04:30:00  Blood (EBV): (no growth / pending)\n  2146-06-24 23:30:00  MRSA SCREEN: (no growth / pending)\n  2146-07-04 12:40:00  BLOOD CULTURE: (no growth / pending)\n  2146-06-24 23:30:00  BLOOD CULTURE: ESCHERICHIA COLI\n  2146-06-21 15:30:00  BLOOD CULTURE: (no growth / pending)\n  2146-06-27 03:49:00  BLOOD CULTURE: (no growth / pending)\n  2146-07-05 04:25:00  BLOOD CULTURE: (no growth / pending)\n  2146-06-28 03:43:00  BLOOD CULTURE: (no growth / pending)\n  2146-07-07 17:44:00  BLOOD CULTURE: (no growth / pending)\n  2146-06-24 20:00:00  BLOOD CULTURE: ESCHERICHIA COLI\n        - CEFEPIME: S\n        - AMPICILLIN/SULBACTAM: S\n        - CEFTRIAXONE: S\n        - PIPERACILLIN/TAZO: S\n        - AMPICILLIN: S\n        - TRIMETHOPRIM/SULFA: S\n        - CEFAZOLIN: S\n        - CIPROFLOXACIN: S\n        - TOBRAMYCIN: S\n        - MEROPENEM: S\n        - GENTAMICIN: S\n        - CEFTAZIDIME: S\n  2146-06-25 09:15:00  BLOOD CULTURE: (no growth / pending)\n  2146-07-09 04:00:00  BLOOD CULTURE: (no growth / pending)\n  2146-06-26 02:50:00  BLOOD CULTURE: (no growth / pending)\n  2146-06-26 03:25:00  BLOOD CULTURE: (no growth / pending)\n  2146-07-02 10:29:00  BLOOD CULTURE: (no growth / pending)\n  2146-06-24 23:30:00  BLOOD CULTURE: (no growth / pending)\n  2146-06-24 20:00:00  BLOOD CULTURE: (no growth / pending)\n  2146-07-04 14:00:00  FLUID RECEIVED IN BLOOD CULTURE BOTTLES: (no growth / pending)\n  2146-06-24 23:30:00  FLUID RECEIVED IN BLOOD CULTURE BOTTLES: (no growth / pending)\n  2146-07-07 13:00:00  FLUID RECEIVED IN BLOOD CULTURE BOTTLES: (no growth / pending)\n  2146-07-02 17:00:00  FLUID RECEIVED IN BLOOD CULTURE BOTTLES: (no growth / pending)\n  2146-07-05 18:29:00  Rapid Respiratory Viral Screen & Culture: (no growth / pending)\n  2146-06-17 21:35:00  STOOL: (no growth / pending)\n  2146-06-29 05:52:00  STOOL: (no growth / pending)\n  2146-07-04 15:21:00  STOOL: CANCELLED\n  2146-06-21 06:16:00  STOOL: CANCELLED\n  2146-06-29 17:29:00  STOOL: CANCELLED\n  2146-07-05 13:49:00  STOOL: (no growth / pending)\n  2146-07-05 18:29:00  BRONCHOALVEOLAR LAVAGE: (no growth / pending)\n  2146-07-04 14:07:00  PERITONEAL FLUID: (no growth / pending)\n  2146-06-13 15:09:00  PERITONEAL FLUID: (no growth / pending)\n  2146-06-21 12:40:00  PERITONEAL FLUID: (no growth / pending)\n  2146-07-07 13:00:00  PERITONEAL FLUID: (no growth / pending)\n  2146-07-02 16:53:00  PERITONEAL FLUID: (no growth / pending)\n  2146-07-03 03:10:00  SEROLOGY/BLOOD: (no growth / pending)\n  2146-06-14 04:30:00  SEROLOGY/BLOOD: (no growth / pending)\n  2146-07-05 18:29:00  BRONCHOALVEOLAR LAVAGE: YEAST\n  2146-06-28 02:19:00  SPUTUM: (no growth / pending)\n  2146-06-29 11:30:00  SPUTUM: (no growth / pending)\n  2146-07-04 15:21:00  SPUTUM: (no growth / pending)\n  2146-07-02 20:00:00  SPUTUM: (no growth / pending)\n  2146-07-02 11:00:00  URINE: (no growth / pending)\n  2146-06-27 23:20:00  URINE: GRAM NEGATIVE ROD(S)\n  2146-06-21 16:48:00  URINE: (no growth / pending)\n  2146-06-25 00:55:00  URINE: SERRATIA MARCESCENS\n        - TRIMETHOPRIM/SULFA: S\n        - CEFEPIME: S\n        - CEFTRIAXONE: S\n        - CIPROFLOXACIN: S\n        - MEROPENEM: S\n        - NITROFURANTOIN: R\n        - GENTAMICIN: S\n        - TOBRAMYCIN: S\n        - CEFTAZIDIME: S\n  2146-06-28 02:19:00  SPUTUM: STAPH AUREUS COAG +\n        - LEVOFLOXACIN: R\n        - CLINDAMYCIN: R\n        - ERYTHROMYCIN: R\n        - TRIMETHOPRIM/SULFA: S\n        - GENTAMICIN: S\n        - OXACILLIN: S\n        - TETRACYCLINE: S\n  2146-06-28 02:19:00  SPUTUM: YEAST\n  2146-06-28 02:19:00  SPUTUM: GRAM NEGATIVE ROD(S)\n  2146-06-29 11:30:00  SPUTUM: YEAST\n  2146-07-04 15:21:00  SPUTUM: YEAST\n\n[ MEDICATIONS (prescribed) ]\n  PNEUMOcoccal 23-valent polysaccharide vaccine IM     2146-06-12 ~ 2146-06-15\n  Influenza Vaccine Quadrivalent     IM     2146-06-12 ~ 2146-06-15\n  Sodium Chloride 0.9%  Flush        IV     2146-06-12 ~ 2146-06-27\n  Glucagon                           IM     2146-06-12 ~ 2146-07-14\n  Glucose Gel                        PO     2146-06-12 ~ 2146-07-14\n  Dextrose 50%                       IV     2146-06-12 ~ 2146-07-14\n  Insulin                            SC     2146-06-12 ~ 2146-06-18\n  Multivitamins                      PO/NG  2146-06-12 ~ 2146-07-14\n  Rifaximin                          PO/NG  2146-06-12 ~ 2146-07-14\n  Methimazole                        PO/NG  2146-06-12 ~ 2146-07-14\n  Aspirin                            PO/NG  2146-06-13 ~ 2146-06-24\n  Fenofibrate                        PO     2146-06-13 ~ 2146-06-26\n  Omeprazole                         PO     2146-06-13 ~ 2146-06-24\n  Fish Oil (Omega 3)                 PO     2146-06-13 ~ 2146-06-26\n  Vitamin D                          PO/NG  2146-06-13 ~ 2146-07-14\n  Lidocaine Jelly 2% (Urojet)        TP     2146-06-13 ~ 2146-06-14\n  Albumin 25% (12.5g / 50mL)         IV     2146-06-13 ~ 2146-06-15\n  Heparin                            SC     2146-06-13 ~ 2146-06-24\n  Sodium Bicarbonate                 PO/NG  2146-06-14 ~ 2146-06-15\n  Pancrelipase 5000                  PO     2146-06-14 ~ 2146-06-15\n  Acetaminophen                      PO/NG  2146-06-15 ~ 2146-06-16\n  Ranitidine                         PO/NG  2146-06-16 ~ 2146-06-17\n  Octreotide Acetate                 SC     2146-06-18 ~ 2146-06-18\n  Midodrine                          PO     2146-06-18 ~ 2146-06-19\n  Simethicone                        PO/NG  2146-06-19 ~ 2146-06-26\n  Syringe                            SC     2146-06-19 ~ 2146-06-23\n  sevelamer CARBONATE                PO     2146-06-21 ~ 2146-06-26\n  Tuberculin Protein                 ID     2146-06-22 ~ 2146-06-23\n  Neomycin-Polymyxin-Bacitracin      TP     2146-06-23 ~ 2146-06-24\n  Sodium Chloride 0.9%               IV     2146-06-23 ~ 2146-06-24\n  Heparin Dwell (1000 Units/mL)      DWELL  2146-06-23 ~ 2146-06-24\n  Ondansetron                        PO/NG  2146-06-24 ~ 2146-06-24\n  Vasopressin                        IV DRIP 2146-06-24 ~ 2146-06-27\n  NORepinephrine                     IV DRIP 2146-06-24 ~ 2146-07-04\n  EPINEPHrine                        IV DRIP 2146-06-24 ~ 2146-06-27\n  PHENYLEPHrine                      IV DRIP 2146-06-24 ~ 2146-06-27\n  5% Dextrose                        IV DRIP 2146-06-24 ~ 2146-06-27\n  0.9% Sodium Chloride               IV DRIP 2146-06-24 ~ 2146-07-04\n  Heparin (CRRT Machine Priming)     DIALYS 2146-06-24 ~ 2146-06-24\n  Bag                                REPLACE 2146-06-24 ~ 2146-06-24\n  Fentanyl Citrate                   IV DRIP 2146-06-24 ~ 2146-06-24\n  Soln                               IV DRIP 2146-06-24 ~ 2146-06-24\n  Sodium CITRATE 4%                  DWELL  2146-06-24 ~ 2146-06-24\n  Prismasate (B32 K2)                REPLACE 2146-06-24 ~ 2146-06-24\n  Potassium Chloride                 IV     2146-06-24 ~ 2146-06-24\n  Sterile Water                      IV     2146-06-24 ~ 2146-06-24\n  SW                                 IV     2146-06-24 ~ 2146-06-24\n  Calcium Gluconate                  IV     2146-06-24 ~ 2146-06-24\n  Aztreonam                          IV     2146-06-24 ~ 2146-06-25\n  Vancomycin                         IV     2146-06-24 ~ 2146-06-27\n  0.9% Sodium Chloride (Mini Bag Plus) IV     2146-06-24 ~ 2146-06-25\n  Iso-Osmotic Dextrose               IV     2146-06-24 ~ 2146-06-27\n  Vial                               IV     2146-06-25 ~ 2146-06-26\n  Pantoprazole                       IV     2146-06-25 ~ 2146-06-26\n  Propofol                           IV DRIP 2146-06-25 ~ 2146-07-06\n  Chlorhexidine Gluconate 0.12% Oral Rinse ORAL   2146-06-25 ~ 2146-07-14\n  CefePIME                           IV     2146-06-25 ~ 2146-06-25\n  Famotidine                         PO/NG  2146-06-26 ~ 2146-06-27\n  Nystatin Cream                     TP     2146-06-27 ~ 2146-07-14\n  Metoclopramide                     IV     2146-06-27 ~ 2146-06-30\n  Magnesium Sulfate                  IV     2146-06-28 ~ 2146-06-28\n  Metoprolol Tartrate                IV     2146-06-28 ~ 2146-06-28\n  Bisacodyl                          PR     2146-06-28 ~ 2146-07-14\n  Diltiazem                          IV BOLUS 2146-06-28 ~ 2146-06-28\n  Heparin Flush (10 units/ml)        IV     2146-06-28 ~ 2146-07-14\n  Fleet Enema                        PR     2146-06-28 ~ 2146-06-28\n  Methylnaltrexone                   SUBCUT 2146-06-28 ~ 2146-06-28\n  Lactulose                          PO/NG  2146-06-28 ~ 2146-07-01\n  Meropenem                          IV     2146-06-29 ~ 2146-06-29\n  Senna                              PO/NG  2146-06-30 ~ 2146-07-14\n  Naloxone                           IV     2146-06-30 ~ 2146-07-01\n  Lactulose Enema                    PR     2146-06-30 ~ 2146-07-01\n  Docusate Sodium (Liquid)           PO/NG  2146-06-30 ~ 2146-07-14\n  Artificial Tear Ointment           BOTH EYES 2146-07-01 ~ 2146-07-14\n  Phosphorus                         PO     2146-07-02 ~ 2146-07-03\n  FoLIC Acid                         PO/NG  2146-07-02 ~ 2146-07-14\n  Thiamine                           PO/NG  2146-07-02 ~ 2146-07-14\n  Ciprofloxacin IV                   IV     2146-07-02 ~ 2146-07-03\n  Amiodarone                         IV BOLUS 2146-07-06 ~ 2146-07-07\n  5% Dextrose (EXCEL BAG)            IV DRIP 2146-07-06 ~ 2146-07-06\n  Lidocaine 1% (For PICC/Midline Insertions) SC     2146-07-06 ~ 2146-07-14\n  Micafungin                         IV     2146-07-06 ~ 2146-07-14\n  Tobramycin Sulfate                 IV     2146-07-06 ~ 2146-07-06\n  Phytonadione                       PO/NG  2146-07-09 ~ 2146-07-11\n  Midazolam                          IV BOLUS 2146-07-12 ~ 2146-07-12\n  Morphine Sulfate                   IV DRIP 2146-07-14 ~ 2146-07-14\n  Lorazepam                          IV     2146-07-14 ~ 2146-07-14\n\n[ ICU VITALS — range over stay ]\n  Vital           first     last     min     max  n\n  ABP-sys            85       81      80     184  409\n  SpO2               99      100      88     100  501\n  RR                 28       20      10      37  520\n  ABP-mean           56       76      50     106  410\n  ABP-dia            47       70      36      84  409\n  HR                 97       89      46     168  521\n  Temp(F)            98       99      94     100  138\n  NIBP-sys           63      100      52     156  138\n\n[ NOTE ] 이 차트는 MIMIC-IV Demo의 구조화 테이블(진단/검사/투약/바이탈)을\n사람이 읽는 서사형으로 병합한 것입니다. 검사·바이탈은 추이(첫/끝/최소/최대)로 요약했고,\n전체 원자료는 같은 폴더의 CSV에 있습니다.",
+  "summary": {
+    "oneLiner": [
+      {
+        "text": "69세 M, NASH/other cirrhosis 및 portal HTN/ascites 배경에서 HRS/AKI, E. coli septic shock, hemoperitoneum·hypovolemic shock, hepatic failure with coma로 MICU 경과 후 사망.",
+        "label": "derived",
+        "citations": [
+          "c16"
+        ],
+        "quote": "# 1  Other cirrhosis of liver",
+        "span": {
+          "start": 745,
+          "end": 774
+        }
+      }
+    ],
+    "cannotMiss": [
+      {
+        "text": "Hemoperitoneum 및 hypovolemic shock, acute posthemorrhagic anemia가 진단에 포함되어 출혈성 쇼크 병력으로 최우선 확인 필요.",
+        "label": "explicit",
+        "citations": [
+          "c21"
+        ],
+        "quote": "# 6  Hemoperitoneum",
+        "span": {
+          "start": 976,
+          "end": 995
+        }
+      },
+      {
+        "text": "간성뇌증/간부전 악화 가능: acute and subacute hepatic failure with coma 진단, rifaximin 지속 및 lactulose/enema 사용 기록.",
+        "label": "derived",
+        "citations": [
+          "c27"
+        ],
+        "quote": "#12  Acute and subacute hepatic failure with coma",
+        "span": {
+          "start": 1199,
+          "end": 1248
+        }
+      }
+    ],
+    "blocks": [
+      {
+        "title": "진단명(간질환 원인/IBD 아형)",
+        "items": [
+          {
+            "text": "간질환: Other cirrhosis of liver, NASH, portal hypertension, other ascites가 진단에 기재됨.",
+            "label": "explicit",
+            "citations": [
+              "c43"
+            ],
+            "quote": "#28  Nonalcoholic steatohepatitis (NASH)",
+            "span": {
+              "start": 1905,
+              "end": 1945
+            }
+          },
+          {
+            "text": "신장 합병: Hepatorenal syndrome, AKI, CKD stage 3 동반.",
+            "label": "explicit",
+            "citations": [
+              "c17"
+            ],
+            "quote": "# 2  Hepatorenal syndrome",
+            "span": {
+              "start": 777,
+              "end": 802
+            }
+          },
+          {
+            "text": "감염/쇼크: E. coli sepsis 및 severe sepsis with septic shock 진단, 혈액배양 E. coli 양성.",
+            "label": "explicit",
+            "citations": [
+              "c114"
+            ],
+            "quote": "2146-06-15 23:30:00  BLOOD CULTURE: ESCHERICHIA COLI",
+            "span": {
+              "start": 7339,
+              "end": 7391
+            }
+          }
+        ]
+      },
+      {
+        "title": "MELD/Child-Pugh 추이",
+        "items": [
+          {
+            "text": "MELD 구성요소 악화: Cr first/last 2.40→2.40, min/max 1.50/4.50; INR 1.30→1.90, max 2.90; total bilirubin 1.20→34.50, max 35.90; sodium 125→132, min 124.",
+            "label": "derived",
+            "citations": [
+              "c99"
+            ],
+            "quote": "Bilirubin, Total                1.20     34.50     1.10    35.90  39",
+            "span": {
+              "start": 6331,
+              "end": 6399
+            }
+          },
+          {
+            "text": "간합성능: INR 1.30→1.90, max 2.90; albumin 3.60→3.60, min 2.50/max 5.00.",
+            "label": "derived",
+            "citations": [
+              "c96"
+            ],
+            "quote": "INR(PT)                         1.30      1.90     1.30     2.90  48",
+            "span": {
+              "start": 6109,
+              "end": 6177
+            }
+          },
+          {
+            "text": "간세포손상/담즙정체 추이: AST 45→121, max 1833; ALT 22→29, max 432; ALP 84→105, max 131; total bilirubin 1.20→34.50.",
+            "label": "derived",
+            "citations": [
+              "c101"
+            ],
+            "quote": "Asparate Aminotransferase      45.00    121.00    25.00  1833.00  39",
+            "span": {
+              "start": 6479,
+              "end": 6547
+            }
+          }
+        ]
+      },
+      {
+        "title": "출혈 이력·Hb 추이",
+        "items": [
+          {
+            "text": "출혈 진단: hemoperitoneum, hypovolemic shock, acute posthemorrhagic anemia, postprocedural hemorrhage following cardiac catheterization이 기록됨.",
+            "label": "explicit",
+            "citations": [
+              "c41"
+            ],
+            "quote": "#26  Postprocedural hemorrhage of a circulatory system organ or structure following a cardiac catheterization",
+            "span": {
+              "start": 1714,
+              "end": 1823
+            }
+          },
+          {
+            "text": "Hb 11.70→10.10, nadir 3.90; Hct 35.60→36.00, nadir 13.00; platelet 177→72, nadir 34; INR 1.30→1.90, max 2.90로 출혈/응고장애 위험 큼.",
+            "label": "derived",
+            "citations": [
+              "c93"
+            ],
+            "quote": "Hemoglobin                     11.70     10.10     3.90    11.70  64",
+            "span": {
+              "start": 5887,
+              "end": 5955
+            }
+          },
+          {
+            "text": "수혈력은 제공 구조화 차트에 명시 없음.",
+            "label": "uncertain",
+            "citations": [
+              "c189"
+            ],
+            "quote": "[ MEDICATIONS (prescribed) ]",
+            "span": {
+              "start": 10791,
+              "end": 10819
+            }
+          }
+        ]
+      },
+      {
+        "title": "간경변 합병증(복수/뇌증)",
+        "items": [
+          {
+            "text": "복수: other ascites 진단 및 peritoneal cavity drainage가 6/4, 6/6, 6/12 diagnostic, 6/25 diagnostic에 시행됨.",
+            "label": "explicit",
+            "citations": [
+              "c57"
+            ],
+            "quote": "2146-06-04  Drainage of Peritoneal Cavity, Percutaneous Approach",
+            "span": {
+              "start": 2947,
+              "end": 3011
+            }
+          },
+          {
+            "text": "복수/복막염 평가: peritoneal fluid cultures는 여러 차례 no growth/pending로 기록됨.",
+            "label": "explicit",
+            "citations": [
+              "c152"
+            ],
+            "quote": "2146-06-25 14:07:00  PERITONEAL FLUID: (no growth / pending)",
+            "span": {
+              "start": 9259,
+              "end": 9319
+            }
+          },
+          {
+            "text": "뇌증/간부전: hepatic failure with coma 진단, rifaximin 6/3~7/5 지속 및 lactulose PO/NG 6/19~6/22, lactulose enema 6/21~6/22 사용.",
+            "label": "derived",
+            "citations": [
+              "c198"
+            ],
+            "quote": "Rifaximin                          PO/NG  2146-06-03 ~ 2146-07-05",
+            "span": {
+              "start": 11377,
+              "end": 11442
+            }
+          }
+        ]
+      },
+      {
+        "title": "예정 procedure",
+        "items": [
+          {
+            "text": "제공 차트에는 예정 procedure는 없고, 시행된 procedure만 나열됨.",
+            "label": "uncertain",
+            "citations": [
+              "c55"
+            ],
+            "quote": "[ PROCEDURES ]",
+            "span": {
+              "start": 2829,
+              "end": 2843
+            }
+          }
+        ]
+      }
+    ],
+    "medChanges": [
+      {
+        "text": "간성뇌증 치료: Rifaximin은 6/3~7/5 지속, Lactulose PO/NG 6/19~6/22 및 Lactulose enema 6/21~6/22 추가.",
+        "label": "explicit",
+        "citations": [
+          "c257"
+        ],
+        "quote": "Lactulose                          PO/NG  2146-06-19 ~ 2146-06-22",
+        "span": {
+          "start": 15410,
+          "end": 15475
+        }
+      },
+      {
+        "text": "HRS/순환보조 관련: Albumin 25% 6/4~6/6, Octreotide 6/9, Midodrine 6/9~6/10 사용.",
+        "label": "explicit",
+        "citations": [
+          "c206"
+        ],
+        "quote": "Albumin 25% (12.5g / 50mL)         IV     2146-06-04 ~ 2146-06-06",
+        "span": {
+          "start": 11921,
+          "end": 11986
+        }
+      },
+      {
+        "text": "항혈소판/항응고 노출: Aspirin 6/4~6/15, Heparin SC 6/4~6/15, Heparin dwell/CRRT priming 6/14~6/15 기록.",
+        "label": "explicit",
+        "citations": [
+          "c200"
+        ],
+        "quote": "Aspirin                            PO/NG  2146-06-04 ~ 2146-06-15",
+        "span": {
+          "start": 11513,
+          "end": 11578
+        }
+      },
+      {
+        "text": "Septic shock 기간 vasopressor: Vasopressin 6/15~6/18, Norepinephrine 6/15~6/25, Epinephrine/Phenylephrine 6/15~6/18.",
+        "label": "explicit",
+        "citations": [
+          "c223"
+        ],
+        "quote": "NORepinephrine                     IV DRIP 2146-06-15 ~ 2146-06-25",
+        "span": {
+          "start": 13078,
+          "end": 13144
+        }
+      },
+      {
+        "text": "항생제/항진균제: Aztreonam 6/15~6/16, Vancomycin 6/15~6/18, Cefepime 6/16, Meropenem 6/20, Ciprofloxacin IV 6/23~6/24, Micafungin 6/27~7/5, Tobramycin 6/27.",
+        "label": "explicit",
+        "citations": [
+          "c271"
+        ],
+        "quote": "Micafungin                         IV     2146-06-27 ~ 2146-07-05",
+        "span": {
+          "start": 16376,
+          "end": 16441
+        }
+      },
+      {
+        "text": "응고 보정: Phytonadione PO/NG 6/30~7/2 투여.",
+        "label": "explicit",
+        "citations": [
+          "c273"
+        ],
+        "quote": "Phytonadione                       PO/NG  2146-06-30 ~ 2146-07-02",
+        "span": {
+          "start": 16512,
+          "end": 16577
+        }
+      }
+    ],
+    "gaps": [
+      {
+        "text": "내시경(EGD/colonoscopy) 소견, 정맥류 유무/출혈 이력, ulcer/polyp 기록은 제공 차트에 없음.",
+        "label": "uncertain",
+        "citations": [
+          "c55"
+        ],
+        "quote": "[ PROCEDURES ]",
+        "span": {
+          "start": 2829,
+          "end": 2843
+        }
+      },
+      {
+        "text": "복부영상(간종괴, 담도, 췌장) 결과가 제공되지 않음.",
+        "label": "uncertain",
+        "citations": [
+          "c287"
+        ],
+        "quote": "[ NOTE ] 이 차트는 MIMIC-IV Demo의 구조화 테이블(진단/검사/투약/바이탈)을",
+        "span": {
+          "start": 17304,
+          "end": 17356
+        }
+      },
+      {
+        "text": "MELD/Child-Pugh 점수 자체는 계산/기재되어 있지 않고, 구성요소 요약만 있음.",
+        "label": "uncertain",
+        "citations": [
+          "c79"
+        ],
+        "quote": "[ KEY LABS — trend over stay ]",
+        "span": {
+          "start": 4889,
+          "end": 4919
+        }
+      },
+      {
+        "text": "수혈량/수혈 시점은 제공된 medication/procedure 목록에 명시되지 않음.",
+        "label": "uncertain",
+        "citations": [
+          "c189"
+        ],
+        "quote": "[ MEDICATIONS (prescribed) ]",
+        "span": {
+          "start": 10791,
+          "end": 10819
+        }
+      }
+    ]
+  },
+  "lint": [
+    {
+      "rule": "trend-without-time",
+      "text": "MELD 구성요소 악화: Cr first/last 2.40→2.40, min/max 1.50/4.50; INR 1.30→1.90, max 2.90; total bilirubin 1.20→34.50, max 35.90; sodium 125→132, min 124."
+    },
+    {
+      "rule": "trend-without-time",
+      "text": "간합성능: INR 1.30→1.90, max 2.90; albumin 3.60→3.60, min 2.50/max 5.00."
+    },
+    {
+      "rule": "trend-without-time",
+      "text": "Hb 11.70→10.10, nadir 3.90; Hct 35.60→36.00, nadir 13.00; platelet 177→72, nadir 34; INR 1.30→1.90, max 2.90로 출혈/응고장애 위험 큼."
+    },
+    {
+      "rule": "lab-without-number",
+      "text": "MELD/Child-Pugh 점수 자체는 계산/기재되어 있지 않고, 구성요소 요약만 있음."
+    }
+  ],
+  "cached": true
+}

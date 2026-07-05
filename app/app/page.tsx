@@ -39,6 +39,7 @@ export default function Home() {
   const [busy, setBusy] = useState(false);
   const [extracting, setExtracting] = useState(false);
   const [err, setErr] = useState('');
+  const [demoMode, setDemoMode] = useState(false);
   const markRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -57,6 +58,25 @@ export default function Home() {
     // hydration mismatch — the server can't read location); batched into a single render.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setSpecialty(sp); setSub(t); setPickedLabel(t ? t.name : sp.name); setStage('input');
+  }, []);
+
+  // cached demo (no API call): /app?demo=<id> loads a pre-computed summary into the result view
+  useEffect(() => {
+    const id = new URLSearchParams(location.search).get('demo');
+    if (!id) return;
+    let cancelled = false;
+    fetch(`/demo/${id}.json`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        if (cancelled || !d) return;
+        const sp = SPECIALTIES.find((x) => x.id === d.specialtyId) ?? null;
+        const t = sp?.subspecialties?.find((u) => u.id === d.subId) ?? null;
+        setSpecialty(sp); setSub(t); setPickedLabel(d.chosenName ?? sp?.name ?? '');
+        setMasked(d.masked ?? ''); setIdCount(d.idCount ?? 0);
+        setSummary(d.summary); setLint(d.lint ?? []); setDemoMode(true); setStage('result');
+      })
+      .catch(() => {});
+    return () => { cancelled = true; };
   }, []);
 
   const template: Template | null = sub ?? specialty;
@@ -101,7 +121,7 @@ export default function Home() {
 
   function reset() {
     setStage('pick'); setSpecialty(null); setSub(null); setPickedLabel('');
-    setText(''); setFocus(''); setConsent(false); setMasked(''); setSummary(null); setSel(null); setErr('');
+    setText(''); setFocus(''); setConsent(false); setMasked(''); setSummary(null); setSel(null); setErr(''); setDemoMode(false);
   }
 
   return (
@@ -170,6 +190,9 @@ export default function Home() {
 
         {stage === 'result' && summary && (
           <section className="step reveal" style={{ paddingBottom: 40 }}>
+            {demoMode && (
+              <div className="demo-banner">샘플 데모 — 실제 API 호출 없이 <b>캐시된 요약</b>을 보여드립니다. (MIMIC-IV Demo 합성 케이스)</div>
+            )}
             <div className="row result-head" style={{ justifyContent: 'space-between', margin: '14px 0 10px' }}>
               <div style={{ fontSize: 13 }}>
                 <b>{chosenName}</b> 요약 · 문장을 누르면 → 오른쪽 원문 위치로.
