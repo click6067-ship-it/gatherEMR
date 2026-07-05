@@ -38,6 +38,7 @@ export default function Home() {
   const [sel, setSel] = useState<ResolvedItem | null>(null);
   const [busy, setBusy] = useState(false);
   const [extracting, setExtracting] = useState(false);
+  const [dragOver, setDragOver] = useState(false);
   const [err, setErr] = useState('');
   const [demoMode, setDemoMode] = useState(false);
   const markRef = useRef<HTMLElement>(null);
@@ -95,6 +96,13 @@ export default function Home() {
     } catch (e) { setErr((e as Error).message); } finally { setExtracting(false); }
   }
 
+  function onDropFile(e: React.DragEvent) {
+    e.preventDefault();
+    setDragOver(false);
+    const f = e.dataTransfer.files?.[0];
+    if (f && !extracting) onFile(f);
+  }
+
   async function preview() {
     setBusy(true); setErr('');
     try {
@@ -142,7 +150,13 @@ export default function Home() {
         )}
 
         {stage === 'input' && template && (
-          <section className="step panel sheet reveal">
+          <section
+            className={`step panel sheet reveal${dragOver ? ' dragover' : ''}`}
+            onDragOver={(e) => { e.preventDefault(); if (!dragOver) setDragOver(true); }}
+            onDragLeave={(e) => { if (!e.currentTarget.contains(e.relatedTarget as Node)) setDragOver(false); }}
+            onDrop={onDropFile}
+          >
+            {dragOver && <div className="drop-hint" aria-hidden="true">여기에 파일을 놓으세요</div>}
             <button className="back" onClick={() => setStage('pick')}>← 분과 선택</button>
             <h1 className="q ink play">차트를 붙여넣으세요</h1>
             <p className="sub"><b>{chosenName}</b> 관점으로 요약합니다. 실제 환자 차트 대신 가상(합성) 차트를 넣어 주세요 — 식별정보는 다음 단계에서 가립니다.</p>
@@ -153,9 +167,9 @@ export default function Home() {
                   accept=".txt,.md,.pdf,.png,.jpg,.jpeg,.webp,.bmp,.tiff,.tif,.heic,.hwp,.hwpx,.docx,.pptx,.xlsx"
                   onChange={(e) => { const f = e.target.files?.[0]; if (f) onFile(f); e.currentTarget.value = ''; }} />
               </label>
-              <span style={{ fontSize: 12, color: 'var(--txt-dim)' }}>PDF · 이미지 · HWP · DOCX — 또는 아래에 붙여넣기</span>
+              <span style={{ fontSize: 12, color: 'var(--txt-dim)' }}>PDF · 이미지 · HWP · DOCX — 붙여넣기 · 끌어다 놓기도 됩니다</span>
             </div>
-            <textarea className="ta mono" value={text} onChange={(e) => setText(e.target.value)} placeholder="EMR 케이스 텍스트를 붙여넣거나, 위에서 파일을 첨부하세요 (추출된 텍스트가 여기 표시됩니다)" />
+            <textarea className="ta mono" value={text} onChange={(e) => setText(e.target.value)} placeholder="여기에 EMR 케이스 텍스트를 붙여넣거나, 파일을 이 영역으로 끌어다 놓으세요 (또는 위 '파일 첨부' — 추출된 텍스트가 여기 표시됩니다)" />
             <p className="input-note">봐야 하는 차트가 길고 많을수록 필요할 거예요.</p>
             <p className="focus-lead">분과만 골라도 자동으로 요약돼요. 더 보고 싶은 게 있으면 아래에서 고르거나 직접 적어 주세요 <span className="focus-opt">(선택)</span></p>
             <div className="chips">
