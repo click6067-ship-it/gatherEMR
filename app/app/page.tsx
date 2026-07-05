@@ -86,12 +86,49 @@ export default function Home() {
   function onPick(p: Picked) { setSpecialty(p.specialty); setSub(p.sub); setPickedLabel(p.label); setStage('input'); }
 
   async function onFile(f: File) {
-    setExtracting(true); setErr('');
+    setErr('');
+    const MAX_UPLOAD = 4 * 1024 * 1024; // Vercel caps the request body at ~4.5MB
+    const isPdf = f.type === 'application/pdf' || /\.pdf$/i.test(f.name);
+
+    // Too big to upload → try to read the PDF's text layer in the browser (no upload).
+    if (f.size > MAX_UPLOAD) {
+      if (isPdf) {
+        setExtracting(true);
+        try {
+          const { extractText, getDocumentProxy } = await import('unpdf');
+          const pdf = await getDocumentProxy(new Uint8Array(await f.arrayBuffer()));
+          const { text } = await extractText(pdf, { mergePages: true });
+          const t = (text ?? '').trim();
+          if (t) { setText(t); return; }
+          setErr('이 PDF는 용량이 크고 스캔(이미지)으로만 되어 있어 브라우저에서 읽을 수 없어요. 텍스트를 붙여넣거나, 페이지를 나눠 4MB 이하로 올려 주세요.');
+        } catch (e) {
+          setErr(/password|encrypt/i.test((e as Error).message)
+            ? '암호가 걸린 PDF는 열 수 없어요. 암호를 풀고 다시 올리거나 텍스트를 붙여넣어 주세요.'
+            : '큰 PDF를 읽지 못했어요. 텍스트를 직접 붙여넣어 주세요.');
+        } finally { setExtracting(false); }
+        return;
+      }
+      setErr('파일이 너무 커요 (약 4MB까지 업로드 가능). 텍스트를 복사해 아래에 붙여넣어 주세요.');
+      return;
+    }
+
+    setExtracting(true);
     try {
       const fd = new FormData(); fd.append('file', f);
       const r = await fetch('/api/extract', { method: 'POST', body: fd });
-      const j = await r.json();
-      if (!r.ok) throw new Error(j.error ?? 'error');
+      // read as text first: platform errors (413/504) return plain text, not JSON
+      const rawBody = await r.text();
+      let j: { text?: string; error?: string } = {};
+      try { j = JSON.parse(rawBody); } catch { /* non-JSON platform error */ }
+      if (!r.ok) {
+        throw new Error(
+          j.error
+          ?? (r.status === 413 ? '파일이 너무 커요 (약 4MB까지 업로드 가능). 텍스트를 붙여넣어 주세요.'
+            : r.status === 504 || r.status === 408 ? '문서가 커서 시간이 초과됐어요. 더 작게 나누거나 텍스트를 붙여넣어 주세요.'
+            : '파일을 처리하지 못했어요. 텍스트를 직접 붙여넣어 주세요.'),
+        );
+      }
+      if (!j.text) throw new Error('텍스트를 추출하지 못했어요. 텍스트를 직접 붙여넣어 주세요.');
       setText(j.text);
     } catch (e) { setErr((e as Error).message); } finally { setExtracting(false); }
   }
@@ -156,13 +193,19 @@ export default function Home() {
             onDragLeave={(e) => { if (!e.currentTarget.contains(e.relatedTarget as Node)) setDragOver(false); }}
             onDrop={onDropFile}
           >
-            {dragOver && <div className="drop-hint" aria-hidden="true">여기에 파일을 놓으세요</div>}
+            {dragOver && !extracting && <div className="drop-hint" aria-hidden="true">여기에 파일을 놓으세요</div>}
+            {extracting && (
+              <div className="loading-hint" aria-live="polite">
+                <span className="dots" aria-hidden="true"><i /><i /><i /></span>
+                <span className="loading-label">차트를 읽는 중…</span>
+              </div>
+            )}
             <button className="back" onClick={() => setStage('pick')}>← 분과 선택</button>
             <h1 className="q ink play">차트를 붙여넣으세요</h1>
             <p className="sub"><b>{chosenName}</b> 관점으로 요약합니다. 실제 환자 차트 대신 가상(합성) 차트를 넣어 주세요 — 식별정보는 다음 단계에서 가립니다.</p>
             <div className="row" style={{ marginBottom: 8 }}>
               <label className="btn ghost" style={{ cursor: extracting ? 'default' : 'pointer', opacity: extracting ? 0.6 : 1 }}>
-                {extracting ? '추출 중…' : '파일 첨부'}
+                {extracting ? <span className="dots" aria-hidden="true"><i /><i /><i /></span> : '파일 첨부'}
                 <input type="file" hidden disabled={extracting}
                   accept=".txt,.md,.pdf,.png,.jpg,.jpeg,.webp,.bmp,.tiff,.tif,.heic,.hwp,.hwpx,.docx,.pptx,.xlsx"
                   onChange={(e) => { const f = e.target.files?.[0]; if (f) onFile(f); e.currentTarget.value = ''; }} />
