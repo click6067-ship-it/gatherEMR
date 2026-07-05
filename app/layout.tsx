@@ -3,6 +3,10 @@ import { IBM_Plex_Sans, IBM_Plex_Sans_KR, IBM_Plex_Mono } from 'next/font/google
 import './globals.css';
 import { BrandHome } from './components/BrandHome';
 import { ScrollReveal } from './components/ScrollReveal';
+import { ThemeToggle } from './components/ThemeToggle';
+
+// Set the saved theme before first paint (no flash). Default = dark.
+const THEME_INIT = `try{if(localStorage.getItem('gemr-theme')==='light')document.documentElement.setAttribute('data-theme','light')}catch(e){}`;
 
 // Anti-slop type system: one cohesive IBM Plex family across scripts (technical,
 // medical-serious — not Inter/Roboto, and not the default Pretendard/Noto every
@@ -20,6 +24,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="ko" className={`${sans.variable} ${sansKR.variable} ${mono.variable}`}>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT }} />
+      </head>
       <body>
         {/* Liquid-glass refraction filter (Aave technique). Chromium reads it via
             backdrop-filter:url(); Safari/Firefox fall back to plain blur+saturate. */}
@@ -32,6 +39,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         {/* no-JS / crash safety: never leave reveal elements hidden */}
         <noscript><style>{`.reveal{opacity:1!important;filter:none!important;transform:none!important}`}</style></noscript>
         <BrandHome />
+        <ThemeToggle />
         <ScrollReveal />
         {children}
       </body>
