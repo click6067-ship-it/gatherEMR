@@ -146,7 +146,7 @@ export default function Home() {
             <button className="back" onClick={() => setStage('pick')}>← 분과 선택</button>
             <h1 className="q ink play">차트를 붙여넣으세요</h1>
             <p className="sub"><b>{chosenName}</b> 관점으로 요약합니다. 실제 환자 차트 대신 가상(합성) 차트를 넣어 주세요 — 식별정보는 다음 단계에서 가립니다.</p>
-            <div className="row" style={{ marginBottom: 8, justifyContent: 'center' }}>
+            <div className="row" style={{ marginBottom: 8 }}>
               <label className="btn ghost" style={{ cursor: extracting ? 'default' : 'pointer', opacity: extracting ? 0.6 : 1 }}>
                 {extracting ? '추출 중…' : '파일 첨부'}
                 <input type="file" hidden disabled={extracting}
