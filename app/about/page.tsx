@@ -73,10 +73,6 @@ export default function About() {
               </figure>
             ))}
           </div>
-          <p className="team-tagline">
-            gatherEMR은 한 명의 아이디어가 아니라,<br />
-            의료 현장과 기술 구현이 연결된 팀 프로젝트입니다.
-          </p>
         </section>
 
         <div className="about-cta">
