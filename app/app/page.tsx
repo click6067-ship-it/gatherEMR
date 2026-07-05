@@ -106,7 +106,7 @@ export default function Home() {
         {err && <div className="alert">⚠ {err}</div>}
 
         {stage === 'pick' && (
-          <section className="step panel sheet">
+          <section className="step panel sheet reveal">
             <h1 className="q ink play">어느 분과세요?</h1>
             <p className="sub">차트를 자기 분과 관점으로 요약해 드립니다. 계열을 눌러 펼치고 분과를 고르세요.</p>
             <SpecialtyPicker onPick={onPick} />
@@ -114,7 +114,7 @@ export default function Home() {
         )}
 
         {stage === 'input' && template && (
-          <section className="step panel sheet">
+          <section className="step panel sheet reveal">
             <button className="back" onClick={() => setStage('pick')}>← 분과 선택</button>
             <h1 className="q ink play">차트를 붙여넣으세요</h1>
             <p className="sub"><b>{chosenName}</b> 관점으로 요약합니다. 식별정보는 다음 단계에서 가립니다.</p>
@@ -149,7 +149,7 @@ export default function Home() {
         )}
 
         {stage === 'preview' && (
-          <section className="step panel sheet">
+          <section className="step panel sheet reveal">
             <button className="back" onClick={() => setStage('input')}>← 수정</button>
             <h1 className="q ink play">전송 전 비식별 확인</h1>
             <p className="sub">식별자 후보 <b>{idCount}</b>건을 <span className="mono">███</span>로 가리고 날짜를 시프트했습니다. 남은 식별정보가 없는지 확인 후 요약하세요. (OpenAI엔 이 비식별본만 전송됩니다.)</p>
@@ -162,7 +162,7 @@ export default function Home() {
         )}
 
         {stage === 'result' && summary && (
-          <section className="step" style={{ paddingBottom: 40 }}>
+          <section className="step reveal" style={{ paddingBottom: 40 }}>
             <div className="row result-head" style={{ justifyContent: 'space-between', margin: '14px 0 10px' }}>
               <div style={{ fontSize: 13 }}>
                 <b>{chosenName}</b> 요약 · 문장을 누르면 → 오른쪽 원문 위치로.
