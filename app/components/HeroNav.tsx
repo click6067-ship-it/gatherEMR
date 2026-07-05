@@ -25,7 +25,7 @@ export function HeroNav() {
         {/* logo lives in the global <BrandHome/> (persistent across pages) */}
         <nav className="nav-pill" aria-label="주요">
           <a href="#specialties" className="nav-link">25개 분과</a>
-          <Link href="/about" className="nav-link">About</Link>
+          <Link href="/about" className="nav-link">About us</Link>
           <a href="/app" className="nav-link nav-cta" onClick={openStart}>시작하기 {ARROW}</a>
         </nav>
         <button className="nav-burger" aria-label="메뉴" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
@@ -35,7 +35,7 @@ export function HeroNav() {
       {open && (
         <div className="nav-menu">
           <a href="#specialties" onClick={() => setOpen(false)}>25개 분과</a>
-          <Link href="/about" onClick={() => setOpen(false)}>About</Link>
+          <Link href="/about" onClick={() => setOpen(false)}>About us</Link>
           <a href="/app" onClick={(e) => { openStart(e); setOpen(false); }}>시작하기 →</a>
         </div>
       )}

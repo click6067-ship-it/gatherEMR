@@ -26,6 +26,12 @@ const CARDS = [
   },
 ];
 
+const MEMBERS = [
+  { img: '/team/member-1.jpg', tag: '팀장', name: '조호영', role: '의학 · PM · 기획', school: '부산대학교 의학과', work: '의료진 네트워크 · 병원 공동개발' },
+  { img: '/team/member-2.jpg', tag: '팀원', name: '김용하', role: '데이터 · AI', school: '부산대학교 데이터사이언스전공', work: 'LLM·RAG 기반 의료 AI 개발' },
+  { img: '/team/member-3.jpg', tag: '팀원', name: '박보은', role: '디자인 · UX 플로우', school: '부산대학교 디자인앤테크놀로지전공', work: '의료진 워크플로우 기반 인터페이스 설계' },
+];
+
 export default function About() {
   return (
     <main className="aboutpage">
@@ -46,6 +52,34 @@ export default function About() {
             </section>
           ))}
         </div>
+        <section className="about-team">
+          <p className="about-eyebrow mono">Our Team · Golden Time</p>
+          <h2 className="about-team-h2">
+            현장·데이터·UX·AI가 <ShinyText>한 팀</ShinyText> 안에.
+          </h2>
+          <div className="team-grid">
+            {MEMBERS.map((m) => (
+              <figure key={m.name} className="team-card reveal">
+                <span className="team-photo">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={m.img} alt={`${m.name} 프로필`} width={128} height={128} loading="lazy" />
+                </span>
+                <figcaption>
+                  <p className="team-role mono">{m.role}</p>
+                  <h3 className="team-name"><span className="team-tag">{m.tag}</span>{m.name}</h3>
+                  <p className="team-aff">{m.school}</p>
+                  <p className="team-work">{m.work}</p>
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+          <p className="team-tagline">
+            gatherEMR은 한 명의 아이디어가 아니라,<br />
+            의료 현장과 기술 구현이 연결된 팀 프로젝트입니다.
+          </p>
+          <p className="team-note">FIN:NECT Challenge · 경상권 지역예선 · AI 분야</p>
+        </section>
+
         <div className="about-cta">
           <Link href="/app" className="btn-glass">차트 넣어보기 →</Link>
         </div>
