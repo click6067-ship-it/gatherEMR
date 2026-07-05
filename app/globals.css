@@ -10,8 +10,8 @@
 html, body { max-width: 100vw; }
 body {
   min-height: 100vh; background: var(--bg); color: #fff;
-  font-family: var(--font-sans), 'Apple SD Gothic Neo', Pretendard, 'Noto Sans KR', sans-serif;
-  line-height: 1.6; word-break: keep-all; letter-spacing: -.01em;
+  font-family: var(--font-sans), var(--font-sans-kr), 'Apple SD Gothic Neo', Pretendard, 'Noto Sans KR', sans-serif;
+  line-height: 1.6; word-break: keep-all; letter-spacing: normal;
   -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
 }
 .mono { font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, monospace; font-variant-ligatures: none; }
@@ -71,15 +71,15 @@ a { color: inherit; text-decoration: none; }
 
 /* ── Hero ── */
 .hero { position: relative; min-height: 100svh; display: flex; overflow: clip; background: var(--bg); }
-.herovid { position: absolute; inset: 0; z-index: 0; }
-.herovid-el { width: 100%; height: 100%; object-fit: cover; filter: blur(7px) brightness(.6) saturate(1.2); transform: scale(1.06); }
-/* left-weighted dim: headline side stays legible, video reads on the right */
+.herovid { position: absolute; inset: 0; z-index: 0; overflow: hidden; }
+.herovid-el { width: 100%; height: 100%; object-fit: cover; filter: blur(5px) brightness(.72) saturate(1.25); transform: scale(1.05); }
+/* left-weighted dim: headline side stays legible, EMR chart reads on the right */
 .herovid-dim { position: absolute; inset: 0; background:
-  linear-gradient(90deg, rgba(0,0,0,.85) 0%, rgba(0,0,0,.55) 42%, rgba(0,0,0,.18) 100%),
-  linear-gradient(180deg, rgba(0,0,0,.45), transparent 28%, rgba(0,0,0,.55)); }
-@media (prefers-reduced-motion: reduce) { .herovid-el { filter: blur(7px) brightness(.6); } }
+  linear-gradient(90deg, rgba(0,0,0,.85) 0%, rgba(0,0,0,.5) 42%, rgba(0,0,0,.08) 100%),
+  linear-gradient(180deg, rgba(0,0,0,.45), transparent 30%, rgba(0,0,0,.55)); }
+@media (prefers-reduced-motion: reduce) { .herovid-el { filter: blur(5px) brightness(.72); } }
 
-.hero-in { position: relative; z-index: 10; width: 100%; display: flex; flex-direction: column; justify-content: space-between; padding: 128px 0 clamp(48px,8vh,88px); min-height: 100svh; }
+.hero-in { position: relative; z-index: 10; width: 100%; display: flex; flex-direction: column; justify-content: space-between; padding-top: 128px; padding-bottom: clamp(48px,8vh,88px); min-height: 100svh; }
 .hero-top { display: flex; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
 .hero-lead { color: var(--txt); max-width: 34ch; font-size: 14px; }
 .hero-stat { color: var(--txt); text-align: right; font-size: 14px; margin-left: auto; }

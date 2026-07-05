@@ -1,11 +1,13 @@
 import type { Metadata } from 'next';
-import { IBM_Plex_Sans, IBM_Plex_Mono } from 'next/font/google';
+import { IBM_Plex_Sans, IBM_Plex_Sans_KR, IBM_Plex_Mono } from 'next/font/google';
 import './globals.css';
 
-// Anti-slop type system: IBM Plex (technical, medical-serious — not Inter/Roboto).
-// Latin+numerals carry the character (EMR text is number-heavy); Korean falls back
-// to a quality system stack. Mono = the signature for all clinical/source data.
+// Anti-slop type system: one cohesive IBM Plex family across scripts (technical,
+// medical-serious — not Inter/Roboto, and not the default Pretendard/Noto every
+// Korean site reaches for). Latin = IBM Plex Sans, Korean = IBM Plex Sans KR (the
+// script's real EMR-text carrier, not a system fallback), Mono = clinical/source data.
 const sans = IBM_Plex_Sans({ subsets: ['latin'], weight: ['400', '500', '600', '700'], display: 'swap', variable: '--font-sans' });
+const sansKR = IBM_Plex_Sans_KR({ subsets: ['latin'], weight: ['400', '500', '600', '700'], display: 'swap', variable: '--font-sans-kr', preload: false });
 const mono = IBM_Plex_Mono({ subsets: ['latin'], weight: ['400', '500', '600'], display: 'swap', variable: '--font-mono' });
 
 export const metadata: Metadata = {
@@ -15,7 +17,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="ko" className={`${sans.variable} ${mono.variable}`}>
+    <html lang="ko" className={`${sans.variable} ${sansKR.variable} ${mono.variable}`}>
       <body>
         {/* Liquid-glass refraction filter (Aave technique). Chromium reads it via
             backdrop-filter:url(); Safari/Firefox fall back to plain blur+saturate. */}
