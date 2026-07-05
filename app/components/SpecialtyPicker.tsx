@@ -37,7 +37,7 @@ export function SpecialtyPicker({ onPick }: { onPick: (p: Picked) => void }) {
               <span className="cn">{specs.length}</span>
               <span className="chev">▾</span>
             </button>
-            {isOpen && (
+            <div className="sec-bodywrap">
               <div className="sec-body">
                 {specs.map((s) =>
                   s.subspecialties && s.subspecialties.length ? (
@@ -70,7 +70,7 @@ export function SpecialtyPicker({ onPick }: { onPick: (p: Picked) => void }) {
                   ),
                 )}
               </div>
-            )}
+            </div>
           </div>
         );
       })}
