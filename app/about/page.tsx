@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { ShinyText } from '../components/ShinyText';
 
 export const metadata: Metadata = {
@@ -74,10 +73,6 @@ export default function About() {
             ))}
           </div>
         </section>
-
-        <div className="about-cta">
-          <Link href="/app" className="btn-glass">차트 넣어보기 →</Link>
-        </div>
       </div>
     </main>
   );
